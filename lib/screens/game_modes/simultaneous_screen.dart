@@ -18,6 +18,7 @@ class _SimultaneousScreenState extends ConsumerState<SimultaneousScreen>
   late AnimationController _revealController;
   late Animation<double> _flashAnimation;
   late Animation<double> _revealAnimation;
+  SimultaneousGameStatus? _lastGameStatus;
 
   @override
   void initState() {
@@ -109,7 +110,12 @@ class _SimultaneousScreenState extends ConsumerState<SimultaneousScreen>
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  ref.read(simultaneousTicTacToeProvider.notifier).resetGame();
+                  if (mounted) {
+                    ref.read(simultaneousTicTacToeProvider.notifier).resetGame();
+                    setState(() {
+                      _lastGameStatus = null;
+                    });
+                  }
                 },
                 icon: const Icon(Icons.refresh),
                 label: const Text('Rigioca'),
@@ -133,18 +139,26 @@ class _SimultaneousScreenState extends ConsumerState<SimultaneousScreen>
   Widget build(BuildContext context) {
     final game = ref.watch(simultaneousTicTacToeProvider);
     
-    // Mostra dialog quando il gioco finisce
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Mostra dialog quando il gioco finisce (solo se è un nuovo stato finale)
+    if (mounted && _lastGameStatus != game.status) {
       if (game.status == SimultaneousGameStatus.humanWon ||
           game.status == SimultaneousGameStatus.aiWon ||
           game.status == SimultaneousGameStatus.tie) {
-        _showGameOverDialog(game.status);
+        
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _showGameOverDialog(game.status);
+          }
+        });
       } else if (game.status == SimultaneousGameStatus.revealing) {
         _revealController.forward().then((_) {
-          _revealController.reset();
+          if (mounted) {
+            _revealController.reset();
+          }
         });
       }
-    });
+    }
+    _lastGameStatus = game.status;
 
     return Scaffold(
       appBar: AppBar(
@@ -213,14 +227,13 @@ class _SimultaneousScreenState extends ConsumerState<SimultaneousScreen>
               ),
 
               // Griglia di gioco
-              Expanded(
+              Container(
+                height: 300,
+                margin: const EdgeInsets.all(20),
                 child: Center(
                   child: AspectRatio(
                     aspectRatio: 1.0,
-                    child: Container(
-                      margin: const EdgeInsets.all(20),
-                      child: _buildGrid(game),
-                    ),
+                    child: _buildGrid(game),
                   ),
                 ),
               ),
@@ -237,10 +250,14 @@ class _SimultaneousScreenState extends ConsumerState<SimultaneousScreen>
                         scale: 1.0 + 0.1 * _flashAnimation.value,
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            ref.read(simultaneousTicTacToeProvider.notifier).confirmMove();
-                            _flashController.forward().then((_) {
-                              _flashController.reset();
-                            });
+                            if (mounted) {
+                              ref.read(simultaneousTicTacToeProvider.notifier).confirmMove();
+                              _flashController.forward().then((_) {
+                                if (mounted) {
+                                  _flashController.reset();
+                                }
+                              });
+                            }
                           },
                           icon: const Icon(Icons.flash_on),
                           label: const Text('Rivela Mosse!'),
@@ -349,7 +366,9 @@ class _SimultaneousScreenState extends ConsumerState<SimultaneousScreen>
     return GestureDetector(
       onTap: isEmpty && game.status == SimultaneousGameStatus.selectingMoves
           ? () {
-              ref.read(simultaneousTicTacToeProvider.notifier).selectMove(index);
+              if (mounted) {
+                ref.read(simultaneousTicTacToeProvider.notifier).selectMove(index);
+              }
             }
           : null,
       child: AnimatedContainer(
@@ -410,9 +429,16 @@ class _SimultaneousScreenState extends ConsumerState<SimultaneousScreen>
           child: Text(
             symbol,
             style: TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
+              fontSize: 56,
+              fontWeight: FontWeight.w900,
               color: symbol == 'X' ? Colors.blue : Colors.red,
+              shadows: [
+                Shadow(
+                  offset: const Offset(1, 1),
+                  blurRadius: 2,
+                  color: Colors.black.withOpacity(0.1),
+                ),
+              ],
             ),
           ),
         );

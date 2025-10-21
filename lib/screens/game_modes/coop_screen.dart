@@ -18,6 +18,7 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
   late AnimationController _pulseController;
   late Animation<double> _teamAnimation;
   late Animation<double> _pulseAnimation;
+  CoopGameStatus? _lastGameStatus;
 
   @override
   void initState() {
@@ -109,7 +110,12 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  ref.read(coopTicTacToeProvider.notifier).resetGame();
+                  if (mounted) {
+                    ref.read(coopTicTacToeProvider.notifier).resetGame();
+                    setState(() {
+                      _lastGameStatus = null;
+                    });
+                  }
                 },
                 icon: const Icon(Icons.refresh),
                 label: const Text('Rigioca'),
@@ -133,14 +139,20 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
   Widget build(BuildContext context) {
     final game = ref.watch(coopTicTacToeProvider);
     
-    // Mostra dialog quando il gioco finisce
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (game.status == CoopGameStatus.teamWon ||
-          game.status == CoopGameStatus.enemyWon ||
-          game.status == CoopGameStatus.tie) {
-        _showGameOverDialog(game.status);
-      }
-    });
+    // Mostra dialog quando il gioco finisce (solo se è un nuovo stato finale)
+    if (mounted && 
+        _lastGameStatus != game.status &&
+        (game.status == CoopGameStatus.teamWon ||
+         game.status == CoopGameStatus.enemyWon ||
+         game.status == CoopGameStatus.tie)) {
+      
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _showGameOverDialog(game.status);
+        }
+      });
+    }
+    _lastGameStatus = game.status;
 
     return Scaffold(
       appBar: AppBar(
@@ -314,14 +326,13 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
               ),
 
               // Griglia di gioco
-              Expanded(
+              Container(
+                height: 300,
+                margin: const EdgeInsets.all(20),
                 child: Center(
                   child: AspectRatio(
                     aspectRatio: 1.0,
-                    child: Container(
-                      margin: const EdgeInsets.all(20),
-                      child: _buildGrid(game),
-                    ),
+                    child: _buildGrid(game),
                   ),
                 ),
               ),
@@ -446,10 +457,14 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
     return GestureDetector(
       onTap: isEmpty && game.status == CoopGameStatus.humanTurn
           ? () {
-              ref.read(coopTicTacToeProvider.notifier).makeHumanMove(index);
-              _teamController.forward().then((_) {
-                _teamController.reset();
-              });
+              if (mounted) {
+                ref.read(coopTicTacToeProvider.notifier).makeHumanMove(index);
+                _teamController.forward().then((_) {
+                  if (mounted) {
+                    _teamController.reset();
+                  }
+                });
+              }
             }
           : null,
       child: AnimatedContainer(
@@ -472,9 +487,16 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
                       child: Text(
                         symbol,
                         style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 56,
+                          fontWeight: FontWeight.w900,
                           color: symbolColor,
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(1, 1),
+                              blurRadius: 2,
+                              color: Colors.black.withOpacity(0.1),
+                            ),
+                          ],
                         ),
                       ),
                     );

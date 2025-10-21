@@ -18,6 +18,7 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
   late AnimationController _revealController;
   late Animation<double> _mysteryAnimation;
   late Animation<double> _revealAnimation;
+  NebelGameStatus? _lastGameStatus;
 
   @override
   void initState() {
@@ -109,7 +110,12 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  ref.read(nebelTicTacToeProvider.notifier).resetGame();
+                  if (mounted) {
+                    ref.read(nebelTicTacToeProvider.notifier).resetGame();
+                    setState(() {
+                      _lastGameStatus = null;
+                    });
+                  }
                 },
                 icon: const Icon(Icons.refresh),
                 label: const Text('Rigioca'),
@@ -133,14 +139,20 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
   Widget build(BuildContext context) {
     final game = ref.watch(nebelTicTacToeProvider);
     
-    // Mostra dialog quando il gioco finisce
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (game.status == NebelGameStatus.humanWon ||
-          game.status == NebelGameStatus.aiWon ||
-          game.status == NebelGameStatus.tie) {
-        _showGameOverDialog(game.status);
-      }
-    });
+    // Mostra dialog quando il gioco finisce (solo se è un nuovo stato finale)
+    if (mounted && 
+        _lastGameStatus != game.status &&
+        (game.status == NebelGameStatus.humanWon ||
+         game.status == NebelGameStatus.aiWon ||
+         game.status == NebelGameStatus.tie)) {
+      
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _showGameOverDialog(game.status);
+        }
+      });
+    }
+    _lastGameStatus = game.status;
 
     return Scaffold(
       appBar: AppBar(
@@ -225,14 +237,13 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
               ),
 
               // Griglia di gioco
-              Expanded(
+              Container(
+                height: 300,
+                margin: const EdgeInsets.all(20),
                 child: Center(
                   child: AspectRatio(
                     aspectRatio: 1.0,
-                    child: Container(
-                      margin: const EdgeInsets.all(20),
-                      child: _buildGrid(game),
-                    ),
+                    child: _buildGrid(game),
                   ),
                 ),
               ),
@@ -345,10 +356,14 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
     return GestureDetector(
       onTap: isClickable
           ? () {
-              ref.read(nebelTicTacToeProvider.notifier).makeHumanMove(index);
-              _revealController.forward().then((_) {
-                _revealController.reset();
-              });
+              if (mounted) {
+                ref.read(nebelTicTacToeProvider.notifier).makeHumanMove(index);
+                _revealController.forward().then((_) {
+                  if (mounted) {
+                    _revealController.reset();
+                  }
+                });
+              }
             }
           : null,
       child: AnimatedContainer(
@@ -409,9 +424,16 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
           child: Text(
             symbol,
             style: TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
+              fontSize: 56,
+              fontWeight: FontWeight.w900,
               color: symbol == 'X' ? Colors.blue : Colors.red,
+              shadows: [
+                Shadow(
+                  offset: const Offset(1, 1),
+                  blurRadius: 2,
+                  color: Colors.black.withOpacity(0.1),
+                ),
+              ],
             ),
           ),
         );

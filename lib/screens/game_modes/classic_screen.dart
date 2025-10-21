@@ -5,7 +5,7 @@ import '../../providers/tic_tac_toe_provider.dart';
 import '../../models/tic_tac_toe_game.dart';
 import '../../models/ai_difficulty.dart';
 import '../../widgets/game_theory_hint.dart';
-import '../../widgets/strategy_selector.dart';
+import '../../widgets/strategy_selection_dialog.dart';
 
 class ClassicScreen extends ConsumerStatefulWidget {
   const ClassicScreen({super.key});
@@ -20,6 +20,10 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
   late AnimationController _symbolController;
   late Animation<double> _gridAnimation;
   late Animation<double> _symbolAnimation;
+  
+  bool _isFirstTime = true;
+  bool _isGameInProgress = false;
+  bool _hasShownGameOverDialog = false;
 
   @override
   void initState() {
@@ -52,6 +56,13 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
     ));
 
     _gridController.forward();
+    
+    // Mostra il popup di selezione strategia solo alla prima apertura
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_isFirstTime) {
+        _showStrategySelectionDialog(isGameStart: true);
+      }
+    });
   }
 
   @override
@@ -59,6 +70,55 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
     _gridController.dispose();
     _symbolController.dispose();
     super.dispose();
+  }
+
+  void _showStrategySelectionDialog({required bool isGameStart, bool autoStartAfterSelection = false}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StrategySelectionDialog(
+          currentStrategy: ref.read(ticTacToeProvider).aiStrategy,
+          isGameStart: isGameStart,
+          onStart: () {
+            if (mounted) {
+              setState(() {
+                _isFirstTime = false;
+                _isGameInProgress = true;
+                _hasShownGameOverDialog = false;
+              });
+            }
+          },
+          onStrategySelected: (strategy) {
+            if (mounted) {
+              ref.read(ticTacToeProvider.notifier).setAIStrategy(strategy);
+              
+              // Se dobbiamo iniziare automaticamente dopo la selezione
+              if (autoStartAfterSelection) {
+                ref.read(ticTacToeProvider.notifier).resetGame();
+                setState(() {
+                  _isGameInProgress = true;
+                  _hasShownGameOverDialog = false;
+                });
+                _symbolController.reset();
+                _gridController.forward();
+              }
+            }
+          },
+          onReplay: () {
+            if (mounted) {
+              ref.read(ticTacToeProvider.notifier).resetGame();
+              setState(() {
+                _isGameInProgress = true;
+                _hasShownGameOverDialog = false;
+              });
+              _symbolController.reset();
+              _gridController.forward();
+            }
+          },
+        );
+      },
+    );
   }
 
   void _showGameOverDialog(GameStatus status) {
@@ -86,56 +146,97 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
         return;
     }
 
+    setState(() {
+      _isGameInProgress = false;
+    });
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          child: AlertDialog(
+        return AlertDialog(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20),
             ),
             title: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: color,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: color,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                ),
             ),
             content: Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16),
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
             ),
             actions: [
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    ref.read(ticTacToeProvider.notifier).resetGame();
-                    _symbolController.reset();
-                    _gridController.forward();
-                  },
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Rigioca'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: color,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+                Center(
+                child: Column(
+                    children: [
+                    SizedBox(
+                        width: 200,
+                        child: ElevatedButton.icon(
+                        onPressed: () {
+                            Navigator.of(context).pop();
+                            if (mounted) {
+                            ref.read(ticTacToeProvider.notifier).resetGame();
+                            setState(() {
+                                _isGameInProgress = true;
+                                _hasShownGameOverDialog = false;
+                            });
+                            _symbolController.reset();
+                            _gridController.forward();
+                            }
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Rigioca'),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: color,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            ),
+                        ),
+                        ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                        width: 200,
+                        child: OutlinedButton.icon(
+                        onPressed: () {
+                            Navigator.of(context).pop();
+                            if (mounted) {
+                            _showStrategySelectionDialog(isGameStart: false, autoStartAfterSelection: true);
+                            }
+                        },
+                        icon: Icon(Icons.settings, color: color),
+                        label: Text(
+                            'Cambia Strategia',
+                            style: TextStyle(color: color),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: color),
+                            padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            ),
+                        ),
+                        ),
                     ),
-                  ),
+                    ],
                 ),
-              ),
+                ),
             ],
-          ),
         );
       },
     );
@@ -145,9 +246,10 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
   Widget build(BuildContext context) {
     final game = ref.watch(ticTacToeProvider);
     
-    // Mostra dialog quando il gioco finisce
+    // Mostra dialog quando il gioco finisce (solo se il widget è ancora montato e non già mostrato)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (game.status != GameStatus.playing) {
+      if (mounted && game.status != GameStatus.playing && !_hasShownGameOverDialog) {
+        _hasShownGameOverDialog = true;
         _showGameOverDialog(game.status);
       }
     });
@@ -222,42 +324,89 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
                   ),
                 ),
 
-                // Selettore strategia AI
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: StrategySelector(
-                    selectedDifficulty: game.aiStrategy.difficulty,
-                    selectedStrategy: game.aiStrategy,
-                    onDifficultyChanged: (difficulty) {
-                      // Quando cambia la difficoltà, seleziona la prima strategia di quella difficoltà
-                      final firstStrategy = difficulty.strategies.first;
-                      ref.read(ticTacToeProvider.notifier).setAIStrategy(firstStrategy);
-                    },
-                    onStrategyChanged: (strategy) {
-                      ref.read(ticTacToeProvider.notifier).setAIStrategy(strategy);
-                    },
+                // Indicatore strategia corrente (non modificabile durante gioco)
+                if (!_isFirstTime && _isGameInProgress)
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.blue.shade200),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.psychology, color: Colors.blue.shade600),
+                        const SizedBox(width: 8),
+                        Text(
+                          'AI: ${game.aiStrategy.displayName}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.blue.shade700,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                // Griglia Tic Tac Toe
-                Container(
-                  height: 300,
-                  margin: const EdgeInsets.all(20),
-                  child: Center(
-                    child: AspectRatio(
-                      aspectRatio: 1.0,
-                      child: AnimatedBuilder(
-                        animation: _gridAnimation,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: _gridAnimation.value,
-                            child: _buildGrid(game),
-                          );
-                        },
+                // Griglia Tic Tac Toe (visibile solo dopo aver iniziato)
+                if (!_isFirstTime)
+                  Container(
+                    height: 300,
+                    margin: const EdgeInsets.all(20),
+                    child: Center(
+                      child: AspectRatio(
+                        aspectRatio: 1.0,
+                        child: AnimatedBuilder(
+                          animation: _gridAnimation,
+                          builder: (context, child) {
+                            return Transform.scale(
+                              scale: _gridAnimation.value,
+                              child: _buildGrid(game),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
+
+                // Messaggio di benvenuto (visibile solo prima di iniziare)
+                if (_isFirstTime)
+                  Container(
+                    height: 300,
+                    margin: const EdgeInsets.all(20),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.play_circle_fill,
+                            size: 80,
+                            color: Colors.blue.shade300,
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Premi START per iniziare!',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Scegli la strategia AI e inizia a giocare',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
 
                 // Widget hint per teoria dei giochi
                 Container(
@@ -317,10 +466,14 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
     return GestureDetector(
       onTap: isEmpty && game.currentPlayer == Player.human && game.status == GameStatus.playing
           ? () {
-              ref.read(ticTacToeProvider.notifier).makeHumanMove(index);
-              _symbolController.forward().then((_) {
-                _symbolController.reset();
-              });
+              if (mounted) {
+                ref.read(ticTacToeProvider.notifier).makeHumanMove(index);
+                _symbolController.forward().then((_) {
+                  if (mounted) {
+                    _symbolController.reset();
+                  }
+                });
+              }
             }
           : null,
       child: AnimatedContainer(
@@ -347,9 +500,16 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
                       child: Text(
                         symbol,
                         style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 56,
+                          fontWeight: FontWeight.w900,
                           color: symbol == 'X' ? Colors.blue : Colors.red,
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(1, 1),
+                              blurRadius: 2,
+                              color: Colors.black.withOpacity(0.1),
+                            ),
+                          ],
                         ),
                       ),
                     );

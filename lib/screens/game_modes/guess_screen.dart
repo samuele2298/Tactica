@@ -16,6 +16,7 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
     with TickerProviderStateMixin {
   late AnimationController _betController;
   late Animation<double> _betAnimation;
+  GuessGameStatus? _lastGameStatus;
 
   @override
   void initState() {
@@ -135,7 +136,12 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  ref.read(guessTicTacToeProvider.notifier).resetGame();
+                  if (mounted) {
+                    ref.read(guessTicTacToeProvider.notifier).resetGame();
+                    setState(() {
+                      _lastGameStatus = null;
+                    });
+                  }
                 },
                 icon: const Icon(Icons.refresh),
                 label: const Text('Nuova Partita'),
@@ -159,12 +165,18 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
   Widget build(BuildContext context) {
     final game = ref.watch(guessTicTacToeProvider);
     
-    // Mostra dialog quando il gioco finisce
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (game.status == GuessGameStatus.gameOver) {
-        _showFinalDialog(game);
-      }
-    });
+    // Mostra dialog quando il gioco finisce (solo se è un nuovo stato finale)
+    if (mounted && 
+        _lastGameStatus != game.status &&
+        game.status == GuessGameStatus.gameOver) {
+      
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _showFinalDialog(game);
+        }
+      });
+    }
+    _lastGameStatus = game.status;
 
     return Scaffold(
       appBar: AppBar(
@@ -262,14 +274,13 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
               ),
 
               // Griglia di gioco
-              Expanded(
+              Container(
+                height: 300,
+                margin: const EdgeInsets.all(20),
                 child: Center(
                   child: AspectRatio(
                     aspectRatio: 1.0,
-                    child: Container(
-                      margin: const EdgeInsets.all(20),
-                      child: _buildGrid(game),
-                    ),
+                    child: _buildGrid(game),
                   ),
                 ),
               ),
@@ -439,8 +450,14 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
     return GestureDetector(
       onTap: isClickable
           ? () {
-              _betController.forward().then((_) => _betController.reset());
-              ref.read(guessTicTacToeProvider.notifier).placeBet(index);
+              if (mounted) {
+                _betController.forward().then((_) {
+                  if (mounted) {
+                    _betController.reset();
+                  }
+                });
+                ref.read(guessTicTacToeProvider.notifier).placeBet(index);
+              }
             }
           : null,
       child: AnimatedContainer(
@@ -461,11 +478,18 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
                   child: Text(
                     symbol,
                     style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 56,
+                      fontWeight: FontWeight.w900,
                       color: game.board[index] == GuessPlayer.ai1 
                           ? Colors.blue.shade700 
                           : Colors.green.shade700,
+                      shadows: [
+                        Shadow(
+                          offset: const Offset(1, 1),
+                          blurRadius: 2,
+                          color: Colors.black.withOpacity(0.1),
+                        ),
+                      ],
                     ),
                   ),
                 ),
