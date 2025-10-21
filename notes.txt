@@ -1,0 +1,86 @@
+| #  | Nome modali# TACTICA - PROGETTO DI GIOCO EDUCATIVO
+
+**Descrizione**: Tactica è un gioco educativo sviluppato in Flutter Web per bambini di età compresa tra i 7 e i 10 anni. 
+Il gioco è progettato per insegnare le basi della strategia e delle tattiche utilizzando i principi della teoria dei giochi in modo divertente e accessibile.
+
+**Piattaforma**: Flutter Web
+**Target**: Bambini 7-10 anni  
+**Obiettivo**: Imparare strategie e tattiche attraverso la teoria dei giochi
+
+## MODALITÀ DI GIOCO - PROTOTIPO INIZIALE
+
+Le prime 5 modalità da implementare:
+
+### 1. Classic Tic Tac Toe (Modalità Base)
+- **Tipo**: Sequenziale
+- **Meccaniche**: Turni alternati, informazione completa
+- **Obiettivo Educativo**: Equilibrio perfetto, capire che giocando razionalmente nessuno vince
+- **Concetti**: Strategie dominanti, equilibrio di Nash
+
+### 2. Simultaneous Tic Tac Toe (Modalità Tattica)
+- **Tipo**: Simultaneo  
+- **Meccaniche**: Entrambi scelgono una cella segretamente
+- **Obiettivo Educativo**: Introduzione all'equilibrio misto e randomizzazione strategica
+- **Concetti**: Strategie miste, imprevedibilità
+
+### 3. Co-op Tic Tac Toe (Modalità Cooperativa)
+- **Tipo**: Sequenziale cooperativo
+- **Meccaniche**: 1 utente + AI amica vs 1 AI nemica (una mossa a testa del team, inizia utente)
+- **Obiettivo Educativo**: Cooperazione e fiducia, capire la Pareto efficiency
+- **Concetti**: Coordinamento, comunicazione, giochi cooperativi
+
+### 4. Nebel Tic Tac Toe (Modalità Strategica)
+- **Tipo**: Sequenziale con informazione incompleta
+- **Meccaniche**: Alcune celle oscurate casualmente
+- **Esempio**:
+  ```
+  [?, X, ?]
+  [X, ?, O]
+  [?, O, ?]
+  ```
+- **Obiettivo Educativo**: Informazione incompleta, decisioni incerte, gestione del rischio
+- **Concetti**: Incertezza, valutazione probabilistica
+
+### 5. Guess & Match Tic Tac Toe (Modalità Sfida)
+- **Tipo**: Simulato/Predittivo
+- **Meccaniche**: L'AI piazza simboli seguendo pattern semplici; il bambino prova a indovinare la prossima mossa dell'AI
+- **Obiettivo Educativo**: Introduce concetti di previsione, strategie miste e pattern recognition
+- **Concetti**: Pattern recognition, predizione, adattamento strategico
+
+## STRUTTURA TECNICA
+
+**Framework**: Flutter Web
+**Linguaggio**: Dart
+**Architettura**: Widget-based con gestione stato per le diverse modalità di gioco    | Tipo di gioco                          | Regole / Modifiche principali                                       | Tipo di payoff                        | Informazione         | Comunicazione        | Concetti teorici spiegati                            | Cosa sperimenta il giocatore                                                  |
+| -- | ----------------------------- | -------------------------------------- | ------------------------------------------------------------------- | ------------------------------------- | -------------------- | -------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 1  | **Classic Tic Tac Toe**       | Sequenziale, somma zero                | Turni alternati, info completa                                      | +1 vittoria, -1 sconfitta, 0 pareggio | Completa             | No                   | *Equilibrio perfetto nei sottogiochi*                | Capisce che se entrambi giocano razionalmente, nessuno vince → Nash “statico” |
+| 2  | **Simultaneous Tic Tac Toe**  | Simultaneo                             | Entrambi scelgono una cella segretamente                            | +1 per ogni linea completata          | Imperfetta           | No                   | *Equilibrio misto*, giochi simultanei                | Scopre che senza informazione, serve randomizzare per non essere prevedibile  |
+| 3  | **Co-op Tic Tac Toe**         | Sequenziale, cooperativo               | Entrambi piazzano sullo stesso tabellone, obiettivo comune          | +1 per tris completato insieme        | Completa             | Sì                   | *Coordinamento, Pareto efficiency*                   | Sperimenta fiducia e collaborazione                                           |
+| 4  | **Competitive Tic Tac Toe**   | Sequenziale, competitivo               | Versione classica ma con punteggi parziali per linee proprie        | Somma non zero                        | Completa             | No                   | *Somma non zero, payoff multipli*                    | Comprende compromessi tra bloccare e massimizzare                             |
+| 5  | **Nebel Tic Tac Toe**         | Sequenziale                            | Alcune celle oscurate casualmente                                   | Somma zero                            | Incompleta           | No                   | *Informazione incompleta, rischio*                   | Deve decidere con incertezza: imparare a stimare                              |
+| 6  | **Private Goals Tic Tac Toe** | Sequenziale, asimmetrico               | Ogni giocatore ha un obiettivo segreto diverso                      | Somma non zero                        | Incompleta (privata) | No                   | *Giochi bayesiani, “types” segreti*                  | Capisce come cambiano le strategie con info nascoste                          |
+| 7  | **Tic Tac Talk**              | Sequenziale, cooperativo o competitivo | Stesse regole, ma i giocatori possono comunicare 10 secondi prima   | Somma non zero                        | Completa             | Limitata (pre-gioco) | *Effetto della comunicazione nei coordination games* | Vede come la fiducia influenza l’esito                                        |
+| 8  | **Silent Mode**               | Sequenziale                            | Niente comunicazione né segnali                                     | Somma non zero                        | Completa             | No                   | *Assenza di coordinamento*                           | Sperimenta fallimento della cooperazione                                      |
+| 9  | **Weighted Grid Tic Tac Toe** | Sequenziale, competitivo               | Ogni cella ha valore diverso (es. centro=3 punti)                   | Somma non zero, asimmetrico           | Completa             | No                   | *Strategie dominanti, payoff differenziati*          | Impara che l’equilibrio cambia con incentivi diversi                          |
+| 10 | **Randomized Tic Tac Toe**    | Simultaneo, competitivo                | Ogni turno entrambi scelgono mossa casualmente (bot o umano)        | Somma zero                            | Incompleta           | No                   | *Equilibrio misto di Nash*                           | Vede che la randomizzazione può essere strategica                             |
+| 11 | **Co-op Incomplete Info**     | Simultaneo, cooperativo                | Obiettivo comune, ma solo parte della griglia visibile              | Somma non zero                        | Incompleta           | Sì (facoltativa)     | *Trust, incomplete info, signaling*                  | Impara come la comunicazione riduce l’incertezza                              |
+| 12 | **Selfish Partners**          | Somma non zero, misto                  | Entrambi ottengono punti condividendo righe parziali                | Somma non zero                        | Completa             | Sì                   | *Giochi misti cooperativi / competitivi*             | Scopre la tensione tra egoismo e collaborazione                               |
+| 13 | **Nash AutoPlay**             | Simulato                               | I giocatori scelgono probabilità di mossa e il gioco si auto-esegue | Somma zero                            | Completa             | No                   | *Equilibrio misto calcolato*                         | Comprende matematicamente cosa significa un equilibrio stabile                |
+| 14 | **Team Tic Tac Toe**          | Squadre 2v2                            | Ogni squadra coordina mosse                                         | Somma non zero                        | Parziale             | Sì                   | *Coalizioni e giochi cooperativi*                    | Scopre l’importanza delle alleanze e della comunicazione efficiente           |
+| 15 | **Bluff Tic Tac Toe**         | Asimmetrico                            | Uno conosce i valori nascosti delle celle, l’altro no               | Somma non zero                        | Incompleta           | Sì (limitata)        | *Asimmetria informativa, signaling, bluff*           | Vede il valore dell’informazione strategica                                   |
+
+PROTOTYPE 
+
+1 | Classic Tic Tac Toe | Sequenziale | Turni alternati, info completa | Equilibrio perfetto, capire che giocando razionalmente nessuno vince | | 
+2 | Simultaneous Tic Tac Toe | Simultaneo | Entrambi scelgono una cella segretamente | Introduzione all’equilibrio misto e randomizzazione strategica | | 
+3 | Co-op Tic Tac Toe | Sequenziale | 1 utente + ai amica vs 1 ai nemica : una mossa a testa del team (inzia utente) | Cooperazione e fiducia, capire la Pareto efficiency | | 
+4 | Nebel Tic Tac Toe | Sequenziale | Alcune celle oscurate casualmente | Informazione incompleta, decisioni incerte, rischio | | 
+[?, X, ?]
+[X, ?, O]
+[?, O, ?]
+
+5
+Guess & Match Tic Tac Toe
+Simulato
+L’AI piazza simboli seguendo pattern semplici; il bambino prova a indovinare la prossima mossa dell’AI
+Introduce concetti di previsione, strategie miste e pattern, in modo semplice e visivo
