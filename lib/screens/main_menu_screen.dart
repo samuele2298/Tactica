@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../widgets/tacticafe_logo.dart';
+import '../widgets/military_avatar.dart';
+import '../widgets/achievement_panel.dart';
+import '../widgets/game_mode_button.dart';
+import '../providers/global_progress_provider.dart';
+import '../models/ai_difficulty.dart';
 
-class MainMenuScreen extends StatelessWidget {
+class MainMenuScreen extends ConsumerWidget {
   const MainMenuScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -28,42 +35,82 @@ class MainMenuScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 40),
                 
-                // Titolo dell'app
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 20,
-                        spreadRadius: 5,
+                // Header con avatar militare
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Avatar militare
+                    MilitaryAvatar(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AchievementPanel(),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 20),
+                    
+                    // Titolo dell'app
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 20,
+                              spreadRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            // Logo e titolo combinati
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                          // Logo animato
+                          TacticafeLogo.large(animated: true),
+                          const SizedBox(width: 20),
+                          // Titolo
+                          Text(
+                            'TACTICA',
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade700,
+                              letterSpacing: 3,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      // Sottotitolo con gradiente che richiama il logo
+                      ShaderMask(
+                        shaderCallback: (bounds) => LinearGradient(
+                          colors: [
+                            Colors.blue.shade600,
+                            Colors.purple.shade600,
+                            Colors.orange.shade600,
+                          ],
+                        ).createShader(bounds),
+                        child: Text(
+                          'Impara le Strategie Giocando',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'TACTICA',
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade700,
-                          letterSpacing: 3,
-                        ),
                       ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Impara le Strategie Giocando',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey.shade600,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 
                 const SizedBox(height: 50),
@@ -83,46 +130,41 @@ class MainMenuScreen extends StatelessWidget {
                 // Lista delle modalità di gioco
                 Expanded(
                   child: ListView(
-                    children: const [
-                      GameModeCard(
+                    children: [
+                      GameModeButton(
                         title: 'Classic Tic Tac Toe',
-                        subtitle: 'Modalità Base',
-                        description: 'Turni alternati, informazione completa.\nImpara l\'equilibrio perfetto di Nash.',
+                        subtitle: 'Turni alternati, equilibrio perfetto di Nash',
                         icon: Icons.grid_3x3,
                         color: Colors.blue,
                         route: '/classic',
                       ),
-                      GameModeCard(
-                        title: 'Simultaneous Tic Tac Toe',
-                        subtitle: 'Modalità Tattica',
-                        description: 'Entrambi scelgono segretamente.\nScopri le strategie miste e l\'imprevedibilità.',
-                        icon: Icons.flash_on,
-                        color: Colors.orange,
-                        route: '/simultaneous',
-                      ),
-                      GameModeCard(
+                      GameModeButton(
                         title: 'Co-op Tic Tac Toe',
-                        subtitle: 'Modalità Cooperativa',
-                        description: 'Tu + AI amica vs AI nemica.\nSperimenta fiducia e collaborazione.',
+                        subtitle: 'Tu + AI amica vs AI nemica - Cooperazione',
                         icon: Icons.group,
                         color: Colors.green,
                         route: '/coop',
                       ),
-                      GameModeCard(
+                      GameModeButton(
                         title: 'Nebel Tic Tac Toe',
-                        subtitle: 'Modalità Strategica',
-                        description: 'Alcune celle sono nascoste.\nDecidi con informazioni incomplete.',
+                        subtitle: 'Celle nascoste - Decisioni con info incomplete',
                         icon: Icons.visibility_off,
                         color: Colors.purple,
                         route: '/nebel',
                       ),
-                      GameModeCard(
+                      GameModeButton(
                         title: 'Guess & Match',
-                        subtitle: 'Modalità Sfida',
-                        description: 'Prevedi le mosse dell\'AI.\nImpara pattern e adattamento strategico.',
+                        subtitle: 'Prevedi le mosse - Pattern recognition',
                         icon: Icons.psychology,
                         color: Colors.red,
                         route: '/guess',
+                      ),
+                      GameModeButton(
+                        title: 'Simultaneous Tic Tac Toe',
+                        subtitle: 'Mosse segrete - Strategie miste avanzate',
+                        icon: Icons.flash_on,
+                        color: Colors.orange,
+                        route: '/simultaneous',
                       ),
                     ],
                   ),
@@ -155,115 +197,3 @@ class MainMenuScreen extends StatelessWidget {
   }
 }
 
-class GameModeCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String description;
-  final IconData icon;
-  final Color color;
-  final String route;
-
-  const GameModeCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.description,
-    required this.icon,
-    required this.color,
-    required this.route,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Material(
-        elevation: 5,
-        borderRadius: BorderRadius.circular(15),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(15),
-          onTap: () => context.go(route),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white,
-                  color.withOpacity(0.05),
-                ],
-              ),
-              border: Border.all(
-                color: color.withOpacity(0.2),
-                width: 2,
-              ),
-            ),
-            child: Row(
-              children: [
-                // Icona
-                Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    icon,
-                    size: 30,
-                    color: color,
-                  ),
-                ),
-                
-                const SizedBox(width: 20),
-                
-                // Contenuto
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: color,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        description,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade700,
-                          height: 1.4,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                
-                // Freccia
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: color.withOpacity(0.7),
-                  size: 20,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

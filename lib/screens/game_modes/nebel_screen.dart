@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../providers/nebel_provider.dart';
 import '../../models/nebel_game.dart';
 import '../../widgets/game_theory_hint.dart';
+import '../../widgets/nebel_strategy_drawer.dart';
+import '../../strategies/nebel/nebel_ai_strategy.dart';
+import '../../utils/dialog_utils.dart';
 
 class NebelScreen extends ConsumerStatefulWidget {
   const NebelScreen({super.key});
@@ -68,7 +71,34 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
         title = '🔮 Hai Vinto!';
         message = 'Incredibile! Sei riuscito a vincere nonostante l\'incertezza!';
         color = Colors.purple;
-        break;
+        // Mostra il dialog delle strategie se il giocatore ha vinto
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            final nebelProvider = ref.read(nebelTicTacToeProvider.notifier);
+            final currentStrategy = nebelProvider.currentStrategy;
+            final strategyProgress = nebelProvider.strategyProgress;
+            
+            DialogUtils.showStrategyRevealDialog(
+              context: context,
+              strategyName: _getStrategyDisplayName(currentStrategy),
+              strategyDescription: _getStrategyDescription(currentStrategy),
+              counterStrategy: '', // Verrà ignorato se multipleCounterStrategies è fornito
+              themeColor: Colors.purple,
+              onReplay: () {
+                Navigator.of(context).pop();
+                ref.read(nebelTicTacToeProvider.notifier).resetGame();
+              },
+              onChangeStrategy: () {
+                Navigator.of(context).pop();
+                Scaffold.of(context).openDrawer();
+              },
+              gameMode: 'Nebel',
+              multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(currentStrategy),
+            );
+            return; // Non mostrare subito il dialog di vittoria
+          }
+        });
+        return; // Esce dal metodo senza mostrare il dialog normale
       case NebelGameStatus.aiWon:
         title = '🤖 Ha Vinto l\'AI';
         message = 'L\'AI ha sfruttato meglio le informazioni incomplete!';
@@ -83,6 +113,11 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
         return;
     }
 
+    // Per tutte le condizioni diverse da humanWon, mostra il dialog normale
+    _showVictoryDialog(title, message, color);
+  }
+
+  void _showVictoryDialog(String title, String message, Color color) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -161,7 +196,58 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/'),
         ),
+        actions: [
+          Builder(
+            builder: (BuildContext scaffoldContext) {
+              return IconButton(
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.purple.shade700,
+                ),
+                onPressed: () {
+                  Scaffold.of(scaffoldContext).openEndDrawer();
+                },
+              );
+            },
+          ),
+        ],
         backgroundColor: Colors.purple.shade100,
+      ),
+      endDrawer: NebelStrategyDrawer(
+        currentStrategy: ref.read(nebelTicTacToeProvider.notifier).currentStrategy,
+        progress: ref.read(nebelTicTacToeProvider.notifier).strategyProgress,
+        onStrategySelected: (strategy) {
+          ref.read(nebelTicTacToeProvider.notifier).changeStrategy(strategy);
+          if (Navigator.of(context).canPop()) {
+            Navigator.pop(context);
+          }
+        },
+        onInfoPressed: (strategy) {
+          final strategyProgress = ref.read(nebelTicTacToeProvider.notifier).strategyProgress;
+          if (strategyProgress.isDefeated(strategy)) {
+            DialogUtils.showStrategyRevealDialog(
+              context: context,
+              strategyName: _getStrategyDisplayName(strategy),
+              strategyDescription: _getStrategyDescription(strategy),
+              counterStrategy: '', // Verrà ignorato se multipleCounterStrategies è fornito
+              themeColor: Colors.purple,
+              onReplay: () {
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
+                ref.read(nebelTicTacToeProvider.notifier).changeStrategy(strategy);
+                ref.read(nebelTicTacToeProvider.notifier).resetGame();
+              },
+              onChangeStrategy: () {
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
+              },
+              gameMode: 'Nebel',
+              multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(strategy),
+            );
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -439,5 +525,51 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
         );
       },
     );
+  }
+  
+  String _getStrategyDisplayName(NebelAIStrategy strategy) {
+    switch (strategy) {
+      case NebelAIStrategy.cautious:
+        return 'AI Cauta';
+      case NebelAIStrategy.random:
+        return 'AI Casuale';
+      case NebelAIStrategy.conservative:
+        return 'AI Conservativa';
+      case NebelAIStrategy.probing:
+        return 'AI Esploratrice';
+      case NebelAIStrategy.adaptive:
+        return 'AI Adattiva';
+      case NebelAIStrategy.balanced:
+        return 'AI Bilanciata';
+      case NebelAIStrategy.probabilistic:
+        return 'AI Probabilistica';
+      case NebelAIStrategy.analytical:
+        return 'AI Analitica';
+      case NebelAIStrategy.optimal:
+        return 'AI Ottimale';
+    }
+  }
+
+  String _getStrategyDescription(NebelAIStrategy strategy) {
+    switch (strategy) {
+      case NebelAIStrategy.cautious:
+        return 'L\'AI evitava le celle nascoste e preferiva mosse sicure su celle visibili.';
+      case NebelAIStrategy.random:
+        return 'L\'AI sceglieva mosse completamente casuali, ignorando strategia e informazioni.';
+      case NebelAIStrategy.conservative:
+        return 'L\'AI giocava molto difensivamente, prioritizzando sempre il blocco delle tue mosse.';
+      case NebelAIStrategy.probing:
+        return 'L\'AI sondava strategicamente le celle nascoste per ottenere informazioni vantaggiose.';
+      case NebelAIStrategy.adaptive:
+        return 'L\'AI si adattava al tuo stile di gioco e alle tue preferenze per contrastare le tue strategie.';
+      case NebelAIStrategy.balanced:
+        return 'L\'AI bilanciava perfettamente attacco, difesa e esplorazione delle celle nascoste.';
+      case NebelAIStrategy.probabilistic:
+        return 'L\'AI calcolava le probabilità di ogni cella nascosta e ottimizzava le mosse basandosi su analisi statistiche.';
+      case NebelAIStrategy.analytical:
+        return 'L\'AI eseguiva analisi approfondite di tutti gli scenari possibili per trovare sempre la mossa ottimale.';
+      case NebelAIStrategy.optimal:
+        return 'L\'AI giocava in modo matematicamente perfetto, sfruttando ogni informazione e calcolando tutti gli scenari possibili.';
+    }
   }
 }

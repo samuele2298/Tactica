@@ -81,7 +81,7 @@ class GuessTicTacToeGame {
   }
 
   // AI1 fa la sua mossa
-  GuessTicTacToeGame makeAI1Move() {
+  GuessTicTacToeGame makeAI1Move([int? specifiedMove]) {
     if (status != GuessGameStatus.ai1Turn) {
       return this;
     }
@@ -97,8 +97,10 @@ class GuessTicTacToeGame {
       return _checkGameEnd();
     }
 
-    // Strategia AI1: moderatamente intelligente
-    int ai1Move = _findAI1Move(availableMoves);
+    // Usa la mossa specificata dalla strategia o quella standard
+    int ai1Move = (specifiedMove != null && availableMoves.contains(specifiedMove)) 
+        ? specifiedMove 
+        : _findAI1Move(availableMoves);
 
     final newBoard = List<GuessPlayer>.from(board);
     newBoard[ai1Move] = GuessPlayer.ai1;
@@ -154,7 +156,7 @@ class GuessTicTacToeGame {
   }
 
   // AI2 fa la sua mossa
-  GuessTicTacToeGame makeAI2Move() {
+  GuessTicTacToeGame makeAI2Move([int? specifiedMove]) {
     if (status != GuessGameStatus.ai2Turn) {
       return this;
     }
@@ -170,8 +172,10 @@ class GuessTicTacToeGame {
       return _checkGameEnd();
     }
 
-    // Strategia AI2: più aggressiva e intelligente
-    int ai2Move = _findAI2Move(availableMoves);
+    // Usa la mossa specificata dalla strategia o quella standard
+    int ai2Move = (specifiedMove != null && availableMoves.contains(specifiedMove)) 
+        ? specifiedMove 
+        : _findAI2Move(availableMoves);
 
     final newBoard = List<GuessPlayer>.from(board);
     newBoard[ai2Move] = GuessPlayer.ai2;

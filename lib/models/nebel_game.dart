@@ -172,7 +172,7 @@ class NebelTicTacToeGame {
   }
 
   // Mossa dell'AI
-  NebelTicTacToeGame makeAIMove() {
+  NebelTicTacToeGame makeAIMove([int? specifiedMove]) {
     if (status != NebelGameStatus.playing || currentPlayer != NebelPlayer.ai) {
       return this;
     }
@@ -188,8 +188,14 @@ class NebelTicTacToeGame {
       return this;
     }
 
-    // L'AI può giocare su qualsiasi cella libera (anche nascoste)
-    int aiMove = _findBestMove(availableMoves);
+    // Usa la mossa specificata se fornita e valida, altrimenti usa la strategia default
+    int aiMove;
+    if (specifiedMove != null && availableMoves.contains(specifiedMove)) {
+      aiMove = specifiedMove;
+    } else {
+      // L'AI può giocare su qualsiasi cella libera (anche nascoste) - strategia default
+      aiMove = _findBestMove(availableMoves);
+    }
 
     final newBoard = List<NebelPlayer>.from(board);
     newBoard[aiMove] = NebelPlayer.ai;

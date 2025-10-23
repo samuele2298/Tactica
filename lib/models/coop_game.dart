@@ -26,7 +26,7 @@ class CoopTicTacToeGame {
       ],
       status: CoopGameStatus.humanTurn,
       winningLine: null,
-      lastMoveDescription: 'Inizia tu! Coordina con la tua AI amica.',
+      lastMoveDescription: 'È il tuo turno! Inizia la cooperazione con la tua AI amica.',
     );
   }
 

@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../providers/coop_provider.dart';
 import '../../models/coop_game.dart';
 import '../../widgets/game_theory_hint.dart';
+import '../../widgets/coop_strategy_drawer.dart';
+import '../../strategies/coop/coop_ai_strategy.dart';
+import '../../utils/dialog_utils.dart';
 
 class CoopScreen extends ConsumerStatefulWidget {
   const CoopScreen({super.key});
@@ -68,6 +71,33 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
         title = '🎉 Il Team ha Vinto!';
         message = 'Ottimo lavoro di squadra! Tu e la tua AI amica avete collaborato perfettamente!';
         color = Colors.green;
+        // Mostra il dialog delle strategie se il team ha vinto
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            final coopProvider = ref.read(coopTicTacToeProvider.notifier);
+            final currentStrategy = coopProvider.currentStrategy;
+            final strategyProgress = coopProvider.strategyProgress;
+            
+            DialogUtils.showStrategyRevealDialog(
+              context: context,
+              strategyName: _getStrategyDisplayName(currentStrategy),
+              strategyDescription: _getStrategyDescription(currentStrategy),
+              counterStrategy: '', // Verrà ignorato se multipleCounterStrategies è fornito
+              themeColor: Colors.green,
+              onReplay: () {
+                Navigator.of(context).pop();
+                ref.read(coopTicTacToeProvider.notifier).resetGame();
+              },
+              onChangeStrategy: () {
+                Navigator.of(context).pop();
+                // Non serve riaprire il drawer, è già aperto
+              },
+              gameMode: 'Co-op',
+              multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(currentStrategy),
+            );
+            return; // Non mostrare subito il dialog di vittoria
+          }
+        });
         break;
       case CoopGameStatus.enemyWon:
         title = '😤 Il Nemico ha Vinto';
@@ -83,6 +113,59 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
         return;
     }
 
+    // Per tutte le condizioni diverse da teamWon, mostra direttamente il dialog
+    if (status != CoopGameStatus.teamWon) {
+      _showVictoryDialog(title, message, color);
+    }
+  }
+
+  String _getStrategyDisplayName(CoopAIStrategy strategy) {
+    switch (strategy) {
+      case CoopAIStrategy.supportive:
+        return 'AI Supportiva';
+      case CoopAIStrategy.defensive:
+        return 'AI Difensiva';
+      case CoopAIStrategy.random:
+        return 'AI Casuale';
+      case CoopAIStrategy.coordinated:
+        return 'AI Coordinata';
+      case CoopAIStrategy.aggressive:
+        return 'AI Aggressiva';
+      case CoopAIStrategy.balanced:
+        return 'AI Bilanciata';
+      case CoopAIStrategy.tactical:
+        return 'AI Tattica';
+      case CoopAIStrategy.adaptive:
+        return 'AI Adattiva';
+      case CoopAIStrategy.optimal:
+        return 'AI Ottimale';
+    }
+  }
+
+  String _getStrategyDescription(CoopAIStrategy strategy) {
+    switch (strategy) {
+      case CoopAIStrategy.supportive:
+        return 'L\'AI amica si concentrava sul supportarti, bloccando le mosse nemiche e creando opportunità per te.';
+      case CoopAIStrategy.defensive:
+        return 'L\'AI amica giocava in modo difensivo, prioritizzando la protezione da minacce immediate.';
+      case CoopAIStrategy.random:
+        return 'L\'AI amica sceglieva mosse casuali tra quelle disponibili, rendendo il gioco imprevedibile.';
+      case CoopAIStrategy.coordinated:
+        return 'L\'AI amica coordinava attentamente le mosse con le tue, creando sinergie strategiche.';
+      case CoopAIStrategy.aggressive:
+        return 'L\'AI amica giocava aggressivamente, cercando sempre di creare minacce multiple.';
+      case CoopAIStrategy.balanced:
+        return 'L\'AI amica bilanciava attacco e difesa, adattandosi dinamicamente alla situazione.';
+      case CoopAIStrategy.tactical:
+        return 'L\'AI amica utilizzava tattiche avanzate, pianificando diversi turni in anticipo.';
+      case CoopAIStrategy.adaptive:
+        return 'L\'AI amica si adattava in tempo reale al tuo stile di gioco e alle mosse nemiche.';
+      case CoopAIStrategy.optimal:
+        return 'L\'AI amica giocava in modo matematicamente ottimale, massimizzando sempre le probabilità di vittoria del team.';
+    }
+  }
+
+  void _showVictoryDialog(String title, String message, Color color) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -161,7 +244,58 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/'),
         ),
+        actions: [
+          Builder(
+            builder: (BuildContext scaffoldContext) {
+              return IconButton(
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.green.shade700,
+                ),
+                onPressed: () {
+                  Scaffold.of(scaffoldContext).openEndDrawer();
+                },
+              );
+            },
+          ),
+        ],
         backgroundColor: Colors.green.shade100,
+      ),
+      endDrawer: CoopStrategyDrawer(
+        currentStrategy: ref.read(coopTicTacToeProvider.notifier).currentStrategy,
+        progress: ref.read(coopTicTacToeProvider.notifier).strategyProgress,
+        onStrategySelected: (strategy) {
+          ref.read(coopTicTacToeProvider.notifier).changeStrategy(strategy);
+          if (Navigator.of(context).canPop()) {
+            Navigator.pop(context);
+          }
+        },
+        onInfoPressed: (strategy) {
+          final strategyProgress = ref.read(coopTicTacToeProvider.notifier).strategyProgress;
+          if (strategyProgress.isDefeated(strategy)) {
+            DialogUtils.showStrategyRevealDialog(
+              context: context,
+              strategyName: _getStrategyDisplayName(strategy),
+              strategyDescription: _getStrategyDescription(strategy),
+              counterStrategy: '', // Verrà ignorato se multipleCounterStrategies è fornito
+              themeColor: Colors.green,
+              onReplay: () {
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
+                ref.read(coopTicTacToeProvider.notifier).changeStrategy(strategy);
+                ref.read(coopTicTacToeProvider.notifier).resetGame();
+              },
+              onChangeStrategy: () {
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
+              },
+              gameMode: 'Co-op',
+              multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(strategy),
+            );
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(

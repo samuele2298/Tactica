@@ -77,6 +77,27 @@ class SimultaneousTicTacToeGame {
     return SimultaneousGameStatus.selectingMoves;
   }
 
+  // Controlla se rimane solo una mossa disponibile
+  bool _isLastMoveAvailable() {
+    int emptyCells = 0;
+    for (final cell in board) {
+      if (cell == SimultaneousPlayer.none) {
+        emptyCells++;
+      }
+    }
+    return emptyCells == 1;
+  }
+
+  // Ottieni l'ultima cella disponibile
+  int? _getLastAvailableCell() {
+    for (int i = 0; i < board.length; i++) {
+      if (board[i] == SimultaneousPlayer.none) {
+        return i;
+      }
+    }
+    return null;
+  }
+
   // Trova la linea vincente
   List<int>? _findWinningLine(List<SimultaneousPlayer> board) {
     final winPatterns = [
@@ -101,6 +122,23 @@ class SimultaneousTicTacToeGame {
     if (status != SimultaneousGameStatus.selectingMoves || 
         board[index] != SimultaneousPlayer.none) {
       return this;
+    }
+
+    // Se è l'ultima mossa disponibile, esegui automaticamente
+    if (_isLastMoveAvailable()) {
+      final newBoard = List<SimultaneousPlayer>.from(board);
+      newBoard[index] = SimultaneousPlayer.human;
+      
+      final newStatus = _checkGameStatus(newBoard);
+      final winningLine = _findWinningLine(newBoard);
+
+      return copyWith(
+        board: newBoard,
+        status: newStatus,
+        winningLine: winningLine,
+        humanSelectedMove: index,
+        isRevealingMoves: false,
+      );
     }
 
     return copyWith(humanSelectedMove: index);
@@ -128,7 +166,45 @@ class SimultaneousTicTacToeGame {
     final random = Random();
     final aiMove = availableMoves[random.nextInt(availableMoves.length)];
 
-    // Applica le mosse simultaneamente
+    return _executeMovesSimultaneously(aiMove);
+  }
+
+  // Esecuzione turno simultaneo con strategia specifica
+  SimultaneousTicTacToeGame executeSimultaneousTurnWithStrategy(
+    dynamic strategy, 
+    List<int> playerMoveHistory
+  ) {
+    if (status != SimultaneousGameStatus.selectingMoves || 
+        humanSelectedMove == null) {
+      return this;
+    }
+
+    // Importa dinamicamente la strategia se necessario
+    int aiMove;
+    try {
+      // Assumiamo che strategy sia un SimultaneousAIStrategy enum
+      final strategyImpl = _createStrategyImplementation(strategy);
+      aiMove = strategyImpl.selectMove(this, playerMoveHistory);
+    } catch (e) {
+      // Fallback alla strategia casuale
+      final availableMoves = <int>[];
+      for (int i = 0; i < board.length; i++) {
+        if (board[i] == SimultaneousPlayer.none) {
+          availableMoves.add(i);
+        }
+      }
+      
+      if (availableMoves.isEmpty) return this;
+      
+      final random = Random();
+      aiMove = availableMoves[random.nextInt(availableMoves.length)];
+    }
+
+    return _executeMovesSimultaneously(aiMove);
+  }
+
+  // Metodo helper per eseguire le mosse simultaneamente
+  SimultaneousTicTacToeGame _executeMovesSimultaneously(int aiMove) {
     final newBoard = List<SimultaneousPlayer>.from(board);
     
     // Se entrambi scelgono la stessa cella, nessuno la ottiene
@@ -152,6 +228,13 @@ class SimultaneousTicTacToeGame {
     );
   }
 
+  // Factory dinamico per le strategie (importazione dinamica)
+  dynamic _createStrategyImplementation(dynamic strategy) {
+    // Questo sarà gestito dal provider che ha accesso alle import
+    // Per ora ritorniamo null e gestiamo nel provider
+    throw UnimplementedError('Strategy implementation should be handled by provider');
+  }
+
   // Preparazione per il prossimo turno
   SimultaneousTicTacToeGame prepareNextTurn() {
     if (status == SimultaneousGameStatus.revealing) {
@@ -163,6 +246,18 @@ class SimultaneousTicTacToeGame {
       );
     }
     return this;
+  }
+
+  // Verifica se il gioco è in uno stato finale
+  bool get isGameFinished {
+    return status == SimultaneousGameStatus.humanWon || 
+           status == SimultaneousGameStatus.aiWon || 
+           status == SimultaneousGameStatus.tie;
+  }
+
+  // Verifica se è possibile fare ancora mosse
+  bool get canMakeMove {
+    return status == SimultaneousGameStatus.selectingMoves && !isGameFinished;
   }
 
   // Reset del gioco

@@ -84,3 +84,11 @@ Guess & Match Tic Tac Toe
 Simulato
 L’AI piazza simboli seguendo pattern semplici; il bambino prova a indovinare la prossima mossa dell’AI
 Introduce concetti di previsione, strategie miste e pattern, in modo semplice e visivo
+
+
+
+----------------------------------------
+
+- personaggio generale nel menu che colleziona medaglie (tema militare) (animato)
+- livelli da sbloccare per andare avanti da easy ad hard 
+- sistema a punteggi tra varie modalità 

@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/guess_provider.dart';
 import '../../models/guess_game.dart';
+import '../../models/guess_strategy_progress.dart';
+import '../../strategies/guess/guess_ai_strategy.dart';
 import '../../widgets/game_theory_hint.dart';
+import '../../widgets/guess_strategy_drawer.dart';
 
 class GuessScreen extends ConsumerStatefulWidget {
   const GuessScreen({super.key});
@@ -137,7 +140,7 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
                 onPressed: () {
                   Navigator.of(context).pop();
                   if (mounted) {
-                    ref.read(guessTicTacToeProvider.notifier).resetGame();
+                    ref.read(guessNotifierProvider.notifier).resetGame();
                     setState(() {
                       _lastGameStatus = null;
                     });
@@ -163,7 +166,8 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
 
   @override
   Widget build(BuildContext context) {
-    final game = ref.watch(guessTicTacToeProvider);
+    final notifierState = ref.watch(guessNotifierProvider);
+    final game = notifierState.game;
     
     // Mostra dialog quando il gioco finisce (solo se è un nuovo stato finale)
     if (mounted && 
@@ -180,12 +184,41 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Guess & Bet'),
+        title: Text(_getGameModeTitle()),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/'),
         ),
-        backgroundColor: Colors.red.shade100,
+        backgroundColor: Colors.orange.shade100,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: () => _showStrategyInfo(context, notifierState),
+            tooltip: 'Info Strategia',
+          ),
+          Builder(
+            builder: (BuildContext scaffoldContext) {
+              return IconButton(
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.orange.shade700,
+                ),
+                onPressed: () {
+                  Scaffold.of(scaffoldContext).openEndDrawer();
+                },
+                tooltip: 'Strategie',
+              );
+            },
+          ),
+        ],
+      ),
+      endDrawer: GuessStrategyDrawer(
+        onStrategySelected: (strategy) {
+          ref.read(guessNotifierProvider.notifier).changeStrategy(strategy);
+          if (Navigator.of(context).canPop()) {
+            Navigator.pop(context);
+          }
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -456,7 +489,7 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
                     _betController.reset();
                   }
                 });
-                ref.read(guessTicTacToeProvider.notifier).placeBet(index);
+                ref.read(guessNotifierProvider.notifier).placeBet(index);
               }
             }
           : null,
@@ -551,6 +584,135 @@ class _GuessScreenState extends ConsumerState<GuessScreen>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Helper methods per gestione strategia
+  String _getGameModeTitle() {
+    final notifierState = ref.read(guessNotifierProvider);
+    final strategyImpl = GuessAIStrategyFactory.createStrategy(notifierState.currentStrategy);
+    return 'Guess: ${strategyImpl.displayName}';
+  }
+
+  String _getStrategyDisplayName(GuessAIStrategy strategy) {
+    final progress = GuessStrategyProgress();
+    final impl = GuessAIStrategyFactory.createStrategy(strategy);
+    final generic = progress.getGenericStrategy(impl.displayName);
+    return generic?.name ?? impl.displayName;
+  }
+
+  String _getStrategyDescription(GuessAIStrategy strategy) {
+    final progress = GuessStrategyProgress();
+    final impl = GuessAIStrategyFactory.createStrategy(strategy);
+    final generic = progress.getGenericStrategy(impl.displayName);
+    return generic?.description ?? impl.description;
+  }
+
+  void _showStrategyInfo(BuildContext context, GuessNotifierState state) {
+    final impl = GuessAIStrategyFactory.createStrategy(state.currentStrategy);
+    final strategies = state.strategyProgress.getMultipleCounterStrategies(impl.displayName);
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.casino, color: Colors.orange.shade700),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Strategia: ${impl.displayName}',
+                style: TextStyle(color: Colors.orange.shade700),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Consigli strategici:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange.shade800,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ...strategies.asMap().entries.map((entry) {
+                final index = entry.key;
+                final strategy = entry.value;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade100,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange.shade700,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          strategy,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orange.shade200),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Statistiche:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange.shade800,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(state.strategyProgress.detailedStats),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Chiudi',
+              style: TextStyle(color: Colors.orange.shade700),
+            ),
+          ),
+        ],
       ),
     );
   }

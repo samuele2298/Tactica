@@ -6,7 +6,9 @@ import '../../models/tic_tac_toe_game.dart';
 import '../../models/ai_difficulty.dart';
 import '../../models/strategy_progress.dart';
 import '../../widgets/game_theory_hint.dart';
-import '../../widgets/strategy_drawer.dart';
+import '../../widgets/classic_strategy_drawer.dart';
+import '../../widgets/tacticafe_logo.dart';
+import '../../utils/dialog_utils.dart';
 import '../../widgets/strategy_reveal_dialog.dart';
 
 class ClassicScreen extends ConsumerStatefulWidget {
@@ -179,34 +181,33 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
   }
   
   void _showStrategyRevealDialog(AIStrategy defeatedStrategy) {
-    showDialog(
+    DialogUtils.showStrategyRevealDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return StrategyRevealDialog(
-          defeatedStrategy: defeatedStrategy,
-          progress: _strategyProgress,
-          onReplay: () {
-            if (mounted) {
-              ref.read(ticTacToeProvider.notifier).resetGame();
-              setState(() {
-                _isGameInProgress = true;
-                _hasShownGameOverDialog = false;
-                _movesMade = 0;
-              });
-              _symbolController.reset();
-              _gridController.forward();
-            }
-          },
-          onChangeStrategy: () {
-            if (mounted) {
-              setState(() {
-                _hasShownGameOverDialog = false;
-              });
-              _openDrawer();
-            }
-          },
-        );
+      strategyName: defeatedStrategy.displayName,
+      strategyDescription: defeatedStrategy.description,
+      counterStrategy: _strategyProgress.getCounterStrategy(defeatedStrategy.name),
+      themeColor: DialogUtils.getThemeColor('classic'),
+      gameMode: 'Classic',
+      multipleCounterStrategies: _strategyProgress.getMultipleCounterStrategies(defeatedStrategy.name),
+      onReplay: () {
+        if (mounted) {
+          ref.read(ticTacToeProvider.notifier).resetGame();
+          setState(() {
+            _isGameInProgress = true;
+            _hasShownGameOverDialog = false;
+            _movesMade = 0;
+          });
+          _symbolController.reset();
+          _gridController.forward();
+        }
+      },
+      onChangeStrategy: () {
+        if (mounted) {
+          setState(() {
+            _hasShownGameOverDialog = false;
+          });
+          _openDrawer();
+        }
       },
     );
   }
@@ -346,6 +347,11 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
         );
       },
     );
+  }
+
+  void _showStrategyInfo(AIStrategy strategy) {
+    _closeDrawer();
+    _showStrategyRevealDialog(strategy);
   }
 
   @override
@@ -549,11 +555,12 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
         width: 350,
         child: Material(
           elevation: 16,
-          child: StrategyDrawer(
+          child: ClassicStrategyDrawer(
             currentStrategy: ref.read(ticTacToeProvider).aiStrategy,
             progress: _strategyProgress,
             onStrategySelected: _selectStrategy,
             onClose: _closeDrawer,
+            onInfoPressed: _showStrategyInfo,
           ),
         ),
       ),
@@ -561,7 +568,13 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Classic Tic Tac Toe'),
+        title: Row(
+          children: [
+            TacticafeLogo.small(),
+            const SizedBox(width: 8),
+            const Text('Classic Tic Tac Toe'),
+          ],
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/'),
@@ -665,8 +678,8 @@ class _ClassicScreenState extends ConsumerState<ClassicScreen>
                       child: Text(
                         symbol,
                         style: TextStyle(
-                          fontSize: 56,
-                          fontWeight: FontWeight.w900,
+                          fontSize: 65,
+                          fontWeight: FontWeight.bold,
                           color: symbol == 'X' ? Colors.blue : Colors.red,
                           shadows: [
                             Shadow(
