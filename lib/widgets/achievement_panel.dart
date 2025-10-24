@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/global_progress_provider.dart';
-import '../models/ai_difficulty.dart';
+import '../models/enums.dart';
 
 /// Pannello degli achievement militari
 class AchievementPanel extends ConsumerWidget {

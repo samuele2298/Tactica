@@ -1,5 +1,5 @@
 import '../strategies/nebel/nebel_ai_strategy.dart';
-import '../models/ai_difficulty.dart';
+import 'enums.dart';
 
 /// Sistema di tracciamento progresso per le strategie AI Nebel (fog of war)
 class NebelStrategyProgress {

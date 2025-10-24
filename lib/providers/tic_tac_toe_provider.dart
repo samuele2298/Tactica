@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/tic_tac_toe_game.dart';
-import '../models/ai_difficulty.dart';
+import '../models/enums.dart';
 import 'global_progress_provider.dart';
 
 class TicTacToeNotifier extends StateNotifier<TicTacToeGame> {
@@ -18,7 +18,7 @@ class TicTacToeNotifier extends StateNotifier<TicTacToeGame> {
       ref.read(globalProgressProvider.notifier).recordVictory(
         gameMode: 'classic', 
         difficulty: state.aiStrategy.difficulty,
-        strategyName: state.aiStrategy.displayName
+        strategyName: state.aiStrategy.name
       );
     }
     
@@ -34,14 +34,13 @@ class TicTacToeNotifier extends StateNotifier<TicTacToeGame> {
           ref.read(globalProgressProvider.notifier).recordVictory(
             gameMode: 'classic', 
             difficulty: state.aiStrategy.difficulty,
-            strategyName: state.aiStrategy.displayName
+            strategyName: state.aiStrategy.name
           );
         }
       }
     }
   }
   
-
 
   void resetGame({AIStrategy? aiStrategy}) {
     state = state.reset(aiStrategy: aiStrategy);

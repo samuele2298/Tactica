@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/ai_difficulty.dart';
+import '../models/enums.dart';
 
 class DifficultySelector extends StatelessWidget {
   final AIDifficulty selectedDifficulty;

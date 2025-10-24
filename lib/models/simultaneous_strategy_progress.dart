@@ -1,5 +1,5 @@
 import '../strategies/simultaneous/simultaneous_ai_strategy.dart';
-import '../models/ai_difficulty.dart';
+import 'enums.dart';
 
 /// Sistema di tracciamento progresso per le strategie AI simultanee
 class SimultaneousStrategyProgress {

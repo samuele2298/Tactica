@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/ai_difficulty.dart';
+import '../models/enums.dart';
 
 /// Tipi di medaglia militare
 enum MedalType {

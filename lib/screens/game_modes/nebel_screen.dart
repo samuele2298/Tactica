@@ -78,23 +78,7 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
             final currentStrategy = nebelProvider.currentStrategy;
             final strategyProgress = nebelProvider.strategyProgress;
             
-            DialogUtils.showStrategyRevealDialog(
-              context: context,
-              strategyName: _getStrategyDisplayName(currentStrategy),
-              strategyDescription: _getStrategyDescription(currentStrategy),
-              counterStrategy: '', // Verrà ignorato se multipleCounterStrategies è fornito
-              themeColor: Colors.purple,
-              onReplay: () {
-                Navigator.of(context).pop();
-                ref.read(nebelTicTacToeProvider.notifier).resetGame();
-              },
-              onChangeStrategy: () {
-                Navigator.of(context).pop();
-                Scaffold.of(context).openDrawer();
-              },
-              gameMode: 'Nebel',
-              multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(currentStrategy),
-            );
+
             return; // Non mostrare subito il dialog di vittoria
           }
         });
@@ -225,27 +209,7 @@ class _NebelScreenState extends ConsumerState<NebelScreen>
         onInfoPressed: (strategy) {
           final strategyProgress = ref.read(nebelTicTacToeProvider.notifier).strategyProgress;
           if (strategyProgress.isDefeated(strategy)) {
-            DialogUtils.showStrategyRevealDialog(
-              context: context,
-              strategyName: _getStrategyDisplayName(strategy),
-              strategyDescription: _getStrategyDescription(strategy),
-              counterStrategy: '', // Verrà ignorato se multipleCounterStrategies è fornito
-              themeColor: Colors.purple,
-              onReplay: () {
-                if (Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
-                }
-                ref.read(nebelTicTacToeProvider.notifier).changeStrategy(strategy);
-                ref.read(nebelTicTacToeProvider.notifier).resetGame();
-              },
-              onChangeStrategy: () {
-                if (Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
-                }
-              },
-              gameMode: 'Nebel',
-              multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(strategy),
-            );
+
           }
         },
       ),

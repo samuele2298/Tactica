@@ -1,5 +1,5 @@
 import '../strategies/coop/coop_ai_strategy.dart';
-import '../models/ai_difficulty.dart';
+import 'enums.dart';
 
 /// Sistema di tracciamento progresso per le strategie AI cooperative
 class CoopStrategyProgress {

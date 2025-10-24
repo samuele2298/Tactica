@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/guess_strategy_progress.dart';
 import '../../strategies/guess/guess_ai_strategy.dart';
 import '../../providers/guess_provider.dart';
-import '../../models/ai_difficulty.dart';
+import '../models/enums.dart';
 
 /// Drawer delle strategie per Guess mode
 class GuessStrategyDrawer extends ConsumerWidget {

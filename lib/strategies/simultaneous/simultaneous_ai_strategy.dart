@@ -1,6 +1,6 @@
 import 'dart:math';
 import '../../models/simultaneous_game.dart';
-import '../../models/ai_difficulty.dart';
+import '../../models/enums.dart';
 
 /// Classe base astratta per le strategie AI simultanee
 abstract class SimultaneousAIStrategyImplementation {

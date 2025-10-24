@@ -1,6 +1,6 @@
 import 'dart:math';
 import '../../models/nebel_game.dart';
-import '../../models/ai_difficulty.dart';
+import '../../models/enums.dart';
 
 /// Enum delle strategie AI per Nebel (fog of war)
 enum NebelAIStrategy {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/ai_difficulty.dart';
+import '../models/enums.dart';
 import '../models/nebel_strategy_progress.dart';
 import '../strategies/nebel/nebel_ai_strategy.dart';
 import '../widgets/base_strategy_drawer.dart';

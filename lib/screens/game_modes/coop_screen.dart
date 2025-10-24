@@ -78,7 +78,7 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
             final currentStrategy = coopProvider.currentStrategy;
             final strategyProgress = coopProvider.strategyProgress;
             
-            DialogUtils.showStrategyRevealDialog(
+           /*  DialogUtils.showStrategyRevealDialog(
               context: context,
               strategyName: _getStrategyDisplayName(currentStrategy),
               strategyDescription: _getStrategyDescription(currentStrategy),
@@ -94,7 +94,7 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
               },
               gameMode: 'Co-op',
               multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(currentStrategy),
-            );
+            ); */
             return; // Non mostrare subito il dialog di vittoria
           }
         });
@@ -239,7 +239,7 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Co-op Tic Tac Toe'),
+        title: const Text('Co-op'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/'),
@@ -259,7 +259,7 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
             },
           ),
         ],
-        backgroundColor: Colors.green.shade100,
+        backgroundColor: Colors.white,
       ),
       endDrawer: CoopStrategyDrawer(
         currentStrategy: ref.read(coopTicTacToeProvider.notifier).currentStrategy,
@@ -273,27 +273,7 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
         onInfoPressed: (strategy) {
           final strategyProgress = ref.read(coopTicTacToeProvider.notifier).strategyProgress;
           if (strategyProgress.isDefeated(strategy)) {
-            DialogUtils.showStrategyRevealDialog(
-              context: context,
-              strategyName: _getStrategyDisplayName(strategy),
-              strategyDescription: _getStrategyDescription(strategy),
-              counterStrategy: '', // Verrà ignorato se multipleCounterStrategies è fornito
-              themeColor: Colors.green,
-              onReplay: () {
-                if (Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
-                }
-                ref.read(coopTicTacToeProvider.notifier).changeStrategy(strategy);
-                ref.read(coopTicTacToeProvider.notifier).resetGame();
-              },
-              onChangeStrategy: () {
-                if (Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
-                }
-              },
-              gameMode: 'Co-op',
-              multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(strategy),
-            );
+          
           }
         },
       ),
@@ -318,151 +298,41 @@ class _CoopScreenState extends ConsumerState<CoopScreen>
             ),
             child: Column(
             children: [
-              // Header con squadre
-              Container(
-                margin: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    // Team (Tu + AI amica)
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Colors.green.shade300),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.group, color: Colors.green),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'TUO TEAM',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green.shade700,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'Tu + AI Amica',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            const Text(
-                              'Simbolo: X',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    
-                    const SizedBox(width: 16),
-                    
-                    // VS
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'VS',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    
-                    const SizedBox(width: 16),
-                    
-                    // Enemy
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.pink.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Colors.pink.shade300),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.smart_toy, color: Colors.pink),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'NEMICO',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.pink.shade700,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'AI Nemica',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            const Text(
-                              'Simbolo: O',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.pink,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+              // Titolo
+              Padding(
+                padding: EdgeInsets.all(30.0),
+                child: Text(
+                  'Modalità Co-op',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green.shade700
+                  ),
                 ),
               ),
-
-              // Status message
+              
+              // Indicatore turno
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.only(bottom: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Column(
-                  children: [
-                    _buildStatusIndicator(game.status),
-                    const SizedBox(height: 8),
-                    Text(
-                      game.lastMoveDescription,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                      ),
+                  color: Colors.white.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 2,
                     ),
                   ],
                 ),
+   
               ),
-
+              
               // Griglia di gioco
               Container(
                 height: 300,
-                margin: const EdgeInsets.all(20),
+                margin: const EdgeInsets.all(40),
                 child: Center(
                   child: AspectRatio(
                     aspectRatio: 1.0,

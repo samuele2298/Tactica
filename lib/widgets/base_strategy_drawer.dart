@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/ai_difficulty.dart';
+import '../models/enums.dart';
 import '../providers/global_progress_provider.dart';
 
 /// Configurazione per personalizzare il drawer per ogni modalità
@@ -21,7 +21,7 @@ class DrawerConfig {
   
   // Preset configurazioni per modalità
   static const classic = DrawerConfig(
-    title: 'Strategia AI',
+    title: 'Modalità Classica',
     headerIcon: Icons.psychology,
     gradientColors: [Color(0xFF1976D2), Color(0xFF7B1FA2)], // blue to purple
     accentColor: Color(0xFF1976D2),
@@ -29,7 +29,7 @@ class DrawerConfig {
   );
   
   static const simultaneous = DrawerConfig(
-    title: 'Strategia Simultanea',
+    title: 'Modalità Simultanea',
     headerIcon: Icons.flash_on,
     gradientColors: [Color(0xFFFF9800), Color(0xFFFF5722)], // orange to deep orange
     accentColor: Color(0xFFFF9800),
@@ -37,7 +37,7 @@ class DrawerConfig {
   );
   
   static const coop = DrawerConfig(
-    title: 'Strategia Cooperativa',
+    title: 'Modalità Cooperativa',
     headerIcon: Icons.group,
     gradientColors: [Color(0xFF4CAF50), Color(0xFF8BC34A)], // green to light green
     accentColor: Color(0xFF4CAF50),
@@ -45,7 +45,7 @@ class DrawerConfig {
   );
   
   static const nebel = DrawerConfig(
-    title: 'Strategia Nebel',
+    title: 'Modalità nascosta',
     headerIcon: Icons.visibility_off,
     gradientColors: [Color(0xFF7B1FA2), Color(0xFF4A148C)], // purple to dark purple
     accentColor: Color(0xFF7B1FA2),
@@ -53,7 +53,7 @@ class DrawerConfig {
   );
   
   static const guess = DrawerConfig(
-    title: 'Strategia Guess',
+    title: 'Modalità indovina',
     headerIcon: Icons.casino,
     gradientColors: [Color(0xFFFF9800), Color(0xFFE65100)], // orange to deep orange
     accentColor: Color(0xFFFF9800),
@@ -88,7 +88,7 @@ class BaseStrategyDrawer<T extends GenericStrategy> extends ConsumerWidget {
   final Function(T)? onInfoPressed; // Nuovo: pulsante info per strategie sconfitte
 
   const BaseStrategyDrawer({
-    Key? key,
+    super.key,
     required this.currentStrategy,
     required this.progress,
     required this.onStrategySelected,
@@ -96,7 +96,7 @@ class BaseStrategyDrawer<T extends GenericStrategy> extends ConsumerWidget {
     required this.strategies,
     this.onClose,
     this.onInfoPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -108,13 +108,6 @@ class BaseStrategyDrawer<T extends GenericStrategy> extends ConsumerWidget {
             height: 120,
             child: _buildHeader(),
           ),
-          
-          // Statistiche progresso (solo se implementate) - altezza fissa
-          if (_shouldShowProgress()) 
-            SizedBox(
-              height: 80,
-              child: _buildProgressHeader(),
-            ),
           
           // Lista delle strategie - occupa lo spazio rimanente
           Expanded(
@@ -155,23 +148,30 @@ class BaseStrategyDrawer<T extends GenericStrategy> extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  config.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        config.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'Devi battere consecutivamente le strategie per avanzare',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              if (onClose != null)
-                IconButton(
-                  onPressed: onClose,
-                  icon: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  ),
-                ),
             ],
           ),
         ),
@@ -179,45 +179,6 @@ class BaseStrategyDrawer<T extends GenericStrategy> extends ConsumerWidget {
     );
   }
   
-  bool _shouldShowProgress() {
-    try {
-      progress.getStats();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  
-  Widget _buildProgressHeader() {
-    final stats = progress.getStats();
-    final overallProgress = (stats['overallProgress'] as double?) ?? 0.0;
-    final defeatedCount = (stats['defeatedCount'] as int?) ?? 0;
-    final totalStrategies = (stats['totalStrategies'] as int?) ?? strategies.length;
-    
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: config.accentColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: config.accentColor.withOpacity(0.3)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Progresso: $defeatedCount/$totalStrategies',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: config.accentColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildDifficultySection(String title, AIDifficulty difficulty, Color color, WidgetRef ref) {
     final strategiesForDifficulty = strategies.where((s) => s.difficulty == difficulty).toList();
     final globalProgress = ref.read(globalProgressProvider.notifier);
@@ -421,14 +382,14 @@ class BaseStrategyDrawer<T extends GenericStrategy> extends ConsumerWidget {
       children: [
         Expanded(
           child: LinearProgressIndicator(
-            value: wins / needed,
+            value: wins / 3,
             backgroundColor: Colors.grey.shade300,
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),
         const SizedBox(width: 8),
         Text(
-          '$wins/$needed',
+          '$wins/3',
           style: TextStyle(
             fontSize: 11,
             color: Colors.grey.shade600,

@@ -1,6 +1,6 @@
 import 'dart:math';
 import '../../models/guess_game.dart';
-import '../../models/ai_difficulty.dart';
+import '../../models/enums.dart';
 
 /// Enum delle strategie AI per Guess mode (scommesse su AI1 vs AI2)
 enum GuessAIStrategy {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/ai_difficulty.dart';
+import '../models/enums.dart';
 import '../models/simultaneous_strategy_progress.dart';
 import '../strategies/simultaneous/simultaneous_ai_strategy.dart';
 import '../widgets/base_strategy_drawer.dart';

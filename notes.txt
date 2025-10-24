@@ -92,3 +92,38 @@ Introduce concetti di previsione, strategie miste e pattern, in modo semplice e 
 - personaggio generale nel menu che colleziona medaglie (tema militare) (animato)
 - livelli da sbloccare per andare avanti da easy ad hard 
 - sistema a punteggi tra varie modalità 
+
+
+da chiedre ad ai:
+- nella classic mode mettere drawer come nelle altere scaffold.openEndDrawer()
+- fare straegei piu semplici ma sopratutto che abbiano 1 punto debole e/o combinazione che l utente deve apprendere e sfruttare
+
+- sostituire mod guess ->     Modalità asimmetrica
+      Il tabellone è un normale 3x3.
+      Ogni cella ha un valore di punteggio (positivo o negativo).
+      Esempio:
+      +3   +1   0
+      +2   -2   +1
+      0    +3   +2
+
+      Quando un giocatore piazza una pedina, ottiene subito i punti associati a quella cella.
+      Se un giocatore fa tris, guadagna un bonus di +5 punti (ma non vince automaticamente).
+      La partita finisce quando il tabellone è pieno o uno fa tris.
+      👉 Vince chi ha il punteggio totale più alto, non necessariamente chi fa tris.
+
+- sostituire mod co-op ->      Modalità “Bluff” (bonus)
+      Ogni giocatore (X e O) può piazzare una pedina “reale” o “fake” a ogni turno.
+      Solo il sistema (il gioco) sa se è reale o fake.
+      Il giocatore crede di aver messo una vera, ma non lo sa.
+      Se un giocatore pova a mettere una pedina su una cella già occupata:
+      Se la pedina precedente era reale, il giocatore perde il turno (come hai detto).
+      Se la pedina precedente era fake, la nuova pedina sostituisce quella fake e diventa reale.
+      Dopo ogni terza mossa di ciascun giocatore (quindi in modo asincrono o sincrono), il gioco rivela la verità su quella pedina più vecchia:
+      Se era fake → viene rimossa.
+      Se era reale → rimane.
+      Vince chi fa tris con sole pedine reali visibili sul tabellone.
+
+- Simultane update : -> "diventa coop vs cooperazione"
+  Entrambi scelgono simultaneamente una cella segretamente.
+  e la cella diventa bloccata per un turno (nessuno può sceglierla nel turno successivo).
+  Dopo 3 collisioni totali → pareggio

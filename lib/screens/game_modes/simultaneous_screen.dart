@@ -173,29 +173,6 @@ class _SimultaneousScreenState extends ConsumerState<SimultaneousScreen>
     final strategyProgress = ref.read(simultaneousTicTacToeProvider.notifier).strategyProgress;
     final impl = SimultaneousAIStrategyFactory.createStrategy(strategy);
 
-    DialogUtils.showStrategyRevealDialog(
-      context: context,
-      strategyName: impl.displayName,
-      strategyDescription: impl.description,
-      counterStrategy: strategyProgress.getCounterStrategy(strategy),
-      themeColor: DialogUtils.getThemeColor('simultaneous'),
-      gameMode: 'Simultaneous',
-      multipleCounterStrategies: strategyProgress.getMultipleCounterStrategies(strategy),
-      onReplay: () {
-        if (mounted) {
-          ref.read(simultaneousTicTacToeProvider.notifier).resetGame();
-          setState(() {
-            _isGameInProgress = false;
-            _lastGameStatus = null;
-          });
-        }
-      },
-      onChangeStrategy: () {
-        if (mounted) {
-          _openDrawer();
-        }
-      },
-    );
   }
 
   void _showStrategyInfo(SimultaneousAIStrategy strategy) {
