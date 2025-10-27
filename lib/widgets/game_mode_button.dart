@@ -1,9 +1,6 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/global_progress_provider.dart';
-import '../models/enums.dart';
 
 /// Widget che mostra il pulsante di una modalità di gioco - sempre accessibile
 class GameModeButton extends ConsumerWidget {
@@ -24,8 +21,6 @@ class GameModeButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final globalProgress = ref.watch(globalProgressProvider);
-
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -42,7 +37,7 @@ class GameModeButton extends ConsumerWidget {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: color.withOpacity(0.3), width: 2),
+              border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
             ),
             child: Row(
               children: [
@@ -51,7 +46,7 @@ class GameModeButton extends ConsumerWidget {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Center(
@@ -104,4 +99,3 @@ class GameModeButton extends ConsumerWidget {
     );
   }
 }
-

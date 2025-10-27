@@ -127,3 +127,108 @@ da chiedre ad ai:
   Entrambi scelgono simultaneamente una cella segretamente.
   e la cella diventa bloccata per un turno (nessuno può sceglierla nel turno successivo).
   Dopo 3 collisioni totali → pareggio
+
+
+--------------------------------------------------------------
+SEZIONE GIOCA
+
+per mvp un solo giocoa dilemma del progionero 
+🧭 FLUSSO DELL’ESPERIENZA
+1️⃣ Schermata iniziale: “Gioca al Dilemma del Prigioniero”
+
+      Popup:
+      Titolo: “Scegli il tuo avversario”
+      Testo breve (30 parole max) con grafico 2x2 dei payoff base:
+      Cooperare/Tradire — payoff:  
+      (3,3), (0,5), (5,0), (1,1)
+
+      Dropdown o pulsanti per scegliere il tipo di bot:
+      🤖 Tit-for-Tat (imita la tua mossa precedente)
+      😈 Always Betray (tradisce sempre)
+      😇 Always Cooperate (coopera sempre)
+      🎲 Random (scelta casuale)
+
+      Personalizzazione possibile:
+      Numero di turni: 3 / 5 / 10
+      Mostrare o no i payoff numerici (semplifica per principianti)
+
+      👉 Scopo: dare libertà minima ma sufficiente a testare diverse dinamiche strategiche.
+
+2️⃣ Schermata di gioco: “Turno X / N”
+      Layout semplice, senza animazioni inutili:
+
+      Turno 3/5
+      L’avversario sceglie in segreto.
+
+      Tu scegli:
+      [ 🟢 Cooperare ]    [ 🔴 Tradire ]
+
+      Payoff cumulativo: Tu 8 — Bot 7
+      Dopo la scelta → breve pausa → mostra il risultato del turno:
+
+      “Hai cooperato. L’avversario ha tradito.
+      Risultato: (0,5).”
+
+      Poi passa automaticamente al turno successivo.
+      Durata totale di una partita: 1–2 minuti.
+
+3️⃣ Schermata finale: “Risultato della tua partita”
+
+      Mostra una dashboard sintetica con:
+
+      🧩 Dati base:
+      Statistica	Valore
+      Turni totali	5
+      % Cooperazione tua	60%
+      % Cooperazione avversario	40%
+      Payoff medio tuo	2.4
+      Payoff medio avversario	2.6
+      📈 Grafico semplice (fl_chart):
+
+      Linea temporale dei payoff per turno.
+
+      🔍 Analisi testuale automatica:
+
+      Esempio:
+
+      “Hai cooperato nei primi turni, ma hai tradito quando l’altro ti ha tradito.
+      Il gioco non ha raggiunto un equilibrio stabile: la fiducia si è rotta.
+      Strategia dominante: Tradire. Equilibrio di Nash: (Tradisci, Tradisci).”
+
+
+
+ SEZIONE IMPARA 🎓
+ ├─ Cos’è un gioco strategico
+ ├─ Il Dilemma del Prigioniero
+ ├─ Strategia dominante
+ ├─ Equilibrio di Nash
+ └─ Giochi ripetuti e fiducia
+
+ 🧠 Sotto l’analisi compare un pulsante “Capisci perché” → porta al modulo Impara corrispondente.
+ 🧩 Collegamento tra moduli e gioco
+      Situazione nel gioco	Modulo “Impara” suggerito
+      Utente tradisce sempre	“Strategia dominante”
+      Utente e bot tradiscono sempre	“Equilibrio di Nash”
+      Utente coopera con Tit-for-Tat e ottiene payoff alto	“Giochi ripetuti e fiducia”
+      Utente modifica payoff e cambia equilibrio	“Cos’è un gioco strategico”
+
+
+SEZIONE DOCENTE:
+- Crea
+seleziona le impostazioni del gioco (bot, gioco, n turni, max tempo)
+lancia Crea 
+si apre una schermata con qr e codice per entrare e con di fianc le stats in tempo reale del gioco 
+se ttuti finsico o scade il tempo varra chiusa la lobbby e si chied il polling automatico (1,2s) 
+esce o crea una nuova lobby
+
+- Entra 
+inserisce o inquadre codice 
+parte il gioco come modalità classica (ma fine gioco lancia con una post il risultato al server)
+esci 
+
+Lato tecnico:
+redis che tiene la struttura della lobby con i risultati (con ttl > 5min)
+ci sono solo 3 endpoint :
+- sendResult(studente con codice lobby) che aggiunge Risultato
+- createLobby(docente con codice lobby) crea chiave redis
+- updateLobby (docente con codice lobby) chiede se ci sono aggiornamenti (quando riceve il segnale "closed" il fe smette di fare polling )

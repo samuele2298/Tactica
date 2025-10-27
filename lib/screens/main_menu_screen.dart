@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../widgets/tacticafe_logo.dart';
-import '../widgets/military_avatar.dart';
-import '../widgets/achievement_panel.dart';
 import '../widgets/game_mode_button.dart';
-import '../providers/global_progress_provider.dart';
-import '../models/enums.dart';
 
 class MainMenuScreen extends ConsumerWidget {
   const MainMenuScreen({super.key});
@@ -101,44 +96,32 @@ class MainMenuScreen extends ConsumerWidget {
                 
                 const SizedBox(height: 70),
                 
-                // Lista delle modalità di gioco
+                // Le 3 sezioni principali del gioco
                 Expanded(
                   child: ListView(
                     children: [
                       GameModeButton(
-                        title: 'Classica',
-                        subtitle: 'Turni alternati, somma zero, equilibrio perfetto di Nash',
-                        icon: Icons.grid_3x3,
+                        title: 'Gioca',
+                        subtitle: 'Dilemma del Prigioniero - Sperimenta cooperazione vs tradimento',
+                        icon: Icons.play_arrow,
                         color: Colors.blue,
-                        route: '/classic',
+                        route: '/play',
                       ),
+                      const SizedBox(height: 10),
                       GameModeButton(
-                        title: 'Co-op',
-                        subtitle: 'Cooperazione vs competizione',
-                        icon: Icons.group,
+                        title: 'Impara',
+                        subtitle: 'Teoria dei Giochi - Concetti fondamentali spiegati semplice',
+                        icon: Icons.school,
                         color: Colors.green,
-                        route: '/coop',
+                        route: '/impara',
                       ),
+                      const SizedBox(height: 10),
                       GameModeButton(
-                        title: 'Nascosta',
-                        subtitle: 'Informazioni incomplete, probabilità',
-                        icon: Icons.visibility_off,
-                        color: Colors.purple,
-                        route: '/nebel',
-                      ),
-                      GameModeButton(
-                        title: 'Simultanea',
-                        subtitle: 'Bluff e strategie miste',
-                        icon: Icons.flash_on,
+                        title: 'Classe',
+                        subtitle: 'Per Docenti - Crea sessioni multiplayer per la tua classe',
+                        icon: Icons.groups,
                         color: Colors.orange,
-                        route: '/simultaneous',
-                      ),
-                      GameModeButton(
-                        title: 'Indovina',
-                        subtitle: 'Riconoscimento di pattern e previsioni',
-                        icon: Icons.psychology,
-                        color: Colors.red,
-                        route: '/guess',
+                        route: '/classroom',
                       ),
                     ],
                   ),

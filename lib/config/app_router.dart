@@ -1,10 +1,13 @@
 import 'package:go_router/go_router.dart';
 import '../screens/main_menu_screen.dart';
-import '../screens/game_modes/classic_screen.dart';
-import '../screens/game_modes/simultaneous_screen.dart';
-import '../screens/game_modes/coop_screen.dart';
-import '../screens/game_modes/nebel_screen.dart';
-import '../screens/game_modes/guess_screen.dart';
+import '../screens/play_setup_screen.dart';
+import '../screens/play_game_screen.dart';
+import '../screens/play_results_screen.dart';
+import '../screens/learn_screen.dart';
+import '../screens/learning_module_screen.dart';
+import '../screens/classroom_screen.dart';
+// import '../screens/learn_screen.dart';
+// import '../screens/classroom_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -15,34 +18,42 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const MainMenuScreen(),
     ),
     
-    // Classic Tic Tac Toe (il nostro gioco esistente)
+    // Sezione Gioca - Dilemma del Prigioniero
     GoRoute(
-      path: '/classic',
-      builder: (context, state) => const ClassicScreen(),
+      path: '/play',
+      builder: (context, state) => const PlaySetupScreen(),
+    ),
+    GoRoute(
+      path: '/play/game',
+      builder: (context, state) => const PlayGameScreen(),
+    ),
+    GoRoute(
+      path: '/play/results',
+      builder: (context, state) => const PlayResultsScreen(),
     ),
     
-    // Simultaneous Tic Tac Toe
+    // Sezione Impara
     GoRoute(
-      path: '/simultaneous',
-      builder: (context, state) => const SimultaneousScreen(),
+      path: '/impara',
+      builder: (context, state) => const LearnScreen(),
     ),
     
-    // Co-op Tic Tac Toe
+    // Moduli di apprendimento
     GoRoute(
-      path: '/coop',
-      builder: (context, state) => const CoopScreen(),
+      path: '/impara/modulo/:moduleId',
+      builder: (context, state) => LearningModuleScreen(
+        moduleId: state.pathParameters['moduleId']!,
+      ),
     ),
     
-    // Nebel Tic Tac Toe
+    // Sezione Classe  
     GoRoute(
-      path: '/nebel',
-      builder: (context, state) => const NebelScreen(),
+      path: '/classroom',
+      builder: (context, state) => const ClassroomScreen(),
     ),
-    
-    // Guess & Match Tic Tac Toe
     GoRoute(
-      path: '/guess',
-      builder: (context, state) => const GuessScreen(),
+      path: '/classroom/create',
+      builder: (context, state) => const ClassroomScreen(), // Per ora usa la stessa schermata
     ),
   ],
 );

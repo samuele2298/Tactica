@@ -13,11 +13,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // Tactica - Gioco educativo di strategia per bambini 7-10 anni
+  // Tactica - Piattaforma educativa di Teoria dei Giochi per bambini 7-10 anni
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Tactica - Gioco di Strategia',
+      title: 'Tactica - Teoria dei Giochi',
       theme: ThemeData(
         // Tema ottimizzato per bambini con colori vivaci e amichevoli
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
