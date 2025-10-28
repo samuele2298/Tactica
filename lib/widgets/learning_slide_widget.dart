@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../models/learning_content.dart';
 
 class LearningSlideWidget extends ConsumerStatefulWidget {
@@ -91,442 +92,162 @@ class _LearningSlideWidgetState extends ConsumerState<LearningSlideWidget>
     }
   }
 
+  /// --- BUILDER SLIDES ---
+
   Widget _buildIntroSlide() {
-    return Container(
-      padding: const EdgeInsets.all(30),
-      child: Column(
-        children: [
-          // Progress indicator
-          _buildProgressIndicator(),
-          
-          const SizedBox(height: 30),
-          
-          // Hero icon
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blue.shade400, Colors.purple.shade400],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(60),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blue.withValues(alpha: 0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Icon(
-              _getIconData(widget.slide.iconData ?? 'star'),
-              size: 60,
-              color: Colors.white,
-            ),
-          ),
-          
-          const SizedBox(height: 40),
-          
-          // Title
-          Text(
-            widget.slide.title,
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue.shade700,
-              height: 1.2,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 20),
-          
-          // Content
-          Text(
-            widget.slide.content,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade700,
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 40),
-          
-          // Bullet points
-          if (widget.slide.bulletPoints != null) ...[
-            ...widget.slide.bulletPoints!.map((point) => _buildBulletPoint(point)),
-          ],
-          
-          const Spacer(),
-          
-          // Navigation
-          _buildNavigationButtons(),
-        ],
+    return _baseSlideLayout(
+      titleColor: Colors.blue.shade700,
+      iconColor: Colors.white,
+      iconBgGradient: LinearGradient(
+        colors: [Colors.blue.shade400, Colors.purple.shade400],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
     );
   }
 
   Widget _buildConceptSlide() {
-    return Container(
-      padding: const EdgeInsets.all(30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Progress
-          _buildProgressIndicator(),
-          
-          const SizedBox(height: 20),
-          
-          // Title with icon
-          Row(
-            children: [
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Icon(
-                  _getIconData(widget.slide.iconData ?? 'lightbulb'),
-                  color: Colors.green.shade600,
-                  size: 30,
-                ),
-              ),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Text(
-                  widget.slide.title,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          
-          const SizedBox(height: 30),
-          
-          // Content
-          Text(
-            widget.slide.content,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade700,
-              height: 1.6,
-            ),
-          ),
-          
-          const SizedBox(height: 30),
-          
-          // Example box
-          if (widget.slide.example != null)
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.blue.shade200),
-              ),
-              child: Text(
-                widget.slide.example!,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.blue.shade700,
-                  height: 1.5,
-                ),
-              ),
-            ),
-          
-          // Bullet points
-          if (widget.slide.bulletPoints != null) ...[
-            const SizedBox(height: 20),
-            ...widget.slide.bulletPoints!.map((point) => _buildBulletPoint(point)),
-          ],
-          
-          const Spacer(),
-          
-          _buildNavigationButtons(),
-        ],
+    return _baseSlideLayout(
+      titleColor: Colors.green.shade700,
+      iconColor: Colors.green.shade600,
+      iconBgGradient: LinearGradient(
+        colors: [Colors.green.shade50, Colors.green.shade100],
       ),
     );
   }
 
   Widget _buildExampleSlide() {
-    return Container(
-      padding: const EdgeInsets.all(30),
-      child: Column(
-        children: [
-          _buildProgressIndicator(),
-          
-          const SizedBox(height: 20),
-          
-          // Title
-          Text(
-            widget.slide.title,
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.orange.shade700,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 20),
-          
-          // Content
-          Text(
-            widget.slide.content,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade700,
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 30),
-          
-          // Example card
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(25),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.orange.shade50, Colors.yellow.shade50],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.orange.shade200),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.orange.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.auto_awesome,
-                          color: Colors.orange.shade600,
-                          size: 30,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Esempio Pratico',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange.shade700,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    if (widget.slide.example != null)
-                      Text(
-                        widget.slide.example!,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey.shade800,
-                          height: 1.6,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          
-          const SizedBox(height: 20),
-          
-          _buildNavigationButtons(),
-        ],
+    return _baseSlideLayout(
+      titleColor: Colors.orange.shade700,
+      iconColor: Colors.orange.shade600,
+      iconBgGradient: LinearGradient(
+        colors: [Colors.orange.shade50, Colors.yellow.shade50],
       ),
     );
   }
 
   Widget _buildInteractiveSlide() {
-    return Container(
-      padding: const EdgeInsets.all(30),
-      child: Column(
-        children: [
-          _buildProgressIndicator(),
-          
-          const SizedBox(height: 20),
-          
-          // Title
-          Text(
-            widget.slide.title,
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.purple.shade700,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 20),
-          
-          // Content
-          Text(
-            widget.slide.content,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade700,
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 30),
-          
-          // Interactive content
-          Expanded(
-            child: _buildInteractiveContent(),
-          ),
-          
-          const SizedBox(height: 20),
-          
-          _buildNavigationButtons(),
-        ],
+    return _baseSlideLayout(
+      titleColor: Colors.purple.shade700,
+      iconColor: Colors.purple.shade600,
+      iconBgGradient: LinearGradient(
+        colors: [Colors.purple.shade50, Colors.purple.shade100],
       ),
+      interactiveContent: widget.slide.interactiveData,
     );
   }
 
   Widget _buildSummarySlide() {
+    return _baseSlideLayout(
+      titleColor: Colors.green.shade700,
+      iconColor: Colors.green.shade700,
+      iconBgGradient: LinearGradient(
+        colors: [Colors.green.shade50, Colors.green.shade100],
+      ),
+    );
+  }
+
+  /// --- BASE SLIDE LAYOUT CON MARKDOWN ---
+  Widget _baseSlideLayout({
+    required Color titleColor,
+    required Color iconColor,
+    required Gradient iconBgGradient,
+    Map<String, dynamic>? interactiveContent,
+  }) {
     return Container(
       padding: const EdgeInsets.all(30),
       child: Column(
         children: [
           _buildProgressIndicator(),
-          
-          const SizedBox(height: 30),
-          
-          // Success icon
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.green.shade400, Colors.blue.shade400],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(50),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.green.withValues(alpha: 0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.check_circle,
-              size: 50,
-              color: Colors.white,
-            ),
-          ),
-          
-          const SizedBox(height: 30),
-          
-          // Title
-          Text(
-            widget.slide.title,
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.green.shade700,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
           const SizedBox(height: 20),
-          
-          // Content
-          Text(
-            widget.slide.content,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade700,
-              height: 1.5,
+
+          // Icon
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              gradient: iconBgGradient,
+              borderRadius: BorderRadius.circular(40),
             ),
-            textAlign: TextAlign.center,
+            child: Icon(
+              _getIconData(widget.slide.iconData ?? 'star'),
+              color: iconColor,
+              size: 40,
+            ),
           ),
-          
-          const SizedBox(height: 30),
-          
-          // Quote
-          if (widget.slide.quote != null)
-            Container(
-              padding: const EdgeInsets.all(20),
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.green.shade200),
-              ),
-              child: Text(
-                widget.slide.quote!,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.green.shade700,
-                  height: 1.4,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          
-          const SizedBox(height: 30),
-          
-          // Achievement points
-          if (widget.slide.bulletPoints != null) ...[
-            Text(
-              'Cosa hai imparato:',
-              style: TextStyle(
-                fontSize: 18,
+
+          const SizedBox(height: 20),
+
+          // Title
+          MarkdownBody(
+            data: '# ${widget.slide.title}',
+            styleSheet: MarkdownStyleSheet(
+              h1: TextStyle(
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue.shade700,
+                color: titleColor,
               ),
             ),
-            const SizedBox(height: 15),
-            ...widget.slide.bulletPoints!.map((point) => _buildAchievementPoint(point)),
-          ],
-          
+          ),
+          const SizedBox(height: 15),
+
+          // Content
+          if (widget.slide.content.isNotEmpty)
+            MarkdownBody(
+              data: widget.slide.content,
+              styleSheet: MarkdownStyleSheet(
+                p: TextStyle(fontSize: 16, color: Colors.grey.shade700, height: 1.5),
+                strong: const TextStyle(fontWeight: FontWeight.bold),
+                em: const TextStyle(fontStyle: FontStyle.italic),
+                listBullet: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+              ),
+            ),
+
+          const SizedBox(height: 20),
+
+          // Example
+          if (widget.slide.example != null)
+            Container(
+              padding: const EdgeInsets.all(15),
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: MarkdownBody(
+                data: widget.slide.example!,
+                styleSheet: MarkdownStyleSheet(
+                  p: TextStyle(fontSize: 15, color: Colors.grey.shade800, height: 1.4),
+                  strong: const TextStyle(fontWeight: FontWeight.bold),
+                  listBullet: TextStyle(fontSize: 15, color: Colors.grey.shade800),
+                ),
+              ),
+            ),
+
+          // Bullet points
+          if (widget.slide.bulletPoints != null)
+            ...widget.slide.bulletPoints!.map((b) => _buildBulletPoint(b)),
+
+          // Interactive
+          if (interactiveContent != null)
+            Expanded(child: _buildInteractiveContent(interactiveContent)),
+
           const Spacer(),
-          
+
           _buildNavigationButtons(),
         ],
       ),
     );
   }
 
-  Widget _buildInteractiveContent() {
-    final data = widget.slide.interactiveData;
-    if (data == null) return const SizedBox();
-
+  /// --- INTERACTIVE CONTENT ---
+  Widget _buildInteractiveContent(Map<String, dynamic> data) {
     if (data.containsKey('matrix')) {
-      return _buildMatrixVisualization(data['matrix']);
+      final matrix = data['matrix'] as Map<String, dynamic>;
+      return _buildMatrixVisualization(matrix);
     } else if (data.containsKey('question')) {
       return _buildQuizContent(data);
     }
-    
     return const SizedBox();
   }
 
@@ -540,61 +261,32 @@ class _LearningSlideWidgetState extends ConsumerState<LearningSlideWidget>
       ),
       child: Column(
         children: [
-          Text(
-            'Matrice dei Risultati',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.purple.shade700,
-            ),
-          ),
-          const SizedBox(height: 20),
+          Text('Matrice dei Risultati', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.purple.shade700)),
+          const SizedBox(height: 15),
           Table(
             border: TableBorder.all(color: Colors.purple.shade300),
             children: [
-              // Header
               TableRow(
                 decoration: BoxDecoration(color: Colors.purple.shade100),
                 children: [
-                  _buildTableCell('', isHeader: true),
+                  _buildTableCell(''),
                   _buildTableCell('🤝 Coopera', isHeader: true),
                   _buildTableCell('💥 Tradisce', isHeader: true),
                 ],
               ),
-              // Row 1
-              TableRow(
-                children: [
-                  _buildTableCell('🤝 Coopera', isHeader: true),
-                  _buildTableCell(matrix['cooperate_cooperate'] ?? ''),
-                  _buildTableCell(matrix['cooperate_betray'] ?? ''),
-                ],
-              ),
-              // Row 2
-              TableRow(
-                children: [
-                  _buildTableCell('💥 Tradisce', isHeader: true),
-                  _buildTableCell(matrix['betray_cooperate'] ?? ''),
-                  _buildTableCell(matrix['betray_betray'] ?? ''),
-                ],
-              ),
+              TableRow(children: [
+                _buildTableCell('🤝 Coopera', isHeader: true),
+                _buildTableCell(matrix['cooperate_cooperate'] ?? ''),
+                _buildTableCell(matrix['cooperate_betray'] ?? ''),
+              ]),
+              TableRow(children: [
+                _buildTableCell('💥 Tradisce', isHeader: true),
+                _buildTableCell(matrix['betray_cooperate'] ?? ''),
+                _buildTableCell(matrix['betray_betray'] ?? ''),
+              ]),
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTableCell(String text, {bool isHeader = false}) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: isHeader ? 14 : 13,
-          fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-          color: isHeader ? Colors.purple.shade700 : Colors.grey.shade800,
-        ),
-        textAlign: TextAlign.center,
       ),
     );
   }
@@ -609,30 +301,73 @@ class _LearningSlideWidgetState extends ConsumerState<LearningSlideWidget>
       ),
       child: Column(
         children: [
-          Text(
-            data['question'] ?? '',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.purple.shade700,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Risposta: ${data['explanation'] ?? ''}',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade700,
-              height: 1.4,
-            ),
-            textAlign: TextAlign.center,
-          ),
+          Text(data['question'] ?? '', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.purple.shade700)),
+          const SizedBox(height: 10),
+          Text('Risposta: ${data['explanation'] ?? ''}', style: TextStyle(fontSize: 16, color: Colors.grey.shade700)),
         ],
       ),
     );
   }
 
+  /// --- BULLETS & ACHIEVEMENTS ---
+  Widget _buildBulletPoint(String text) {
+    final Color activeColor = widget.moduleColor ?? Colors.blue.shade600;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 6, right: 12),
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(color: activeColor, borderRadius: BorderRadius.circular(4)),
+          ),
+          Expanded(child: MarkdownBody(data: text)),
+        ],
+      ),
+    );
+  }
+
+  /// --- NAVIGATION ---
+  Widget _buildNavigationButtons() {
+    return Row(
+      children: [
+        if (widget.currentSlide > 0)
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: widget.onPrevious,
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Indietro'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey.shade600,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+          )
+        else
+          const Expanded(child: SizedBox()),
+        const SizedBox(width: 12),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: widget.currentSlide < widget.totalSlides - 1 ? widget.onNext : widget.onComplete,
+            icon: Icon(widget.currentSlide < widget.totalSlides - 1 ? Icons.arrow_forward : Icons.check),
+            label: Text(widget.currentSlide < widget.totalSlides - 1 ? 'Avanti' : 'Completa'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: widget.currentSlide < widget.totalSlides - 1 ? Colors.blue.shade600 : Colors.green.shade600,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// --- PROGRESS ---
   Widget _buildProgressIndicator() {
     final Color activeColor = widget.moduleColor ?? Colors.blue.shade600;
     return Row(
@@ -643,137 +378,25 @@ class _LearningSlideWidgetState extends ConsumerState<LearningSlideWidget>
               height: 4,
               margin: EdgeInsets.only(right: i < widget.totalSlides - 1 ? 5 : 0),
               decoration: BoxDecoration(
-                color: i <= widget.currentSlide 
-                    ? activeColor 
-                    : Colors.grey.shade300,
+                color: i <= widget.currentSlide ? activeColor : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
         const SizedBox(width: 10),
-        Text(
-          '${widget.currentSlide + 1}/${widget.totalSlides}',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey.shade600,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text('${widget.currentSlide + 1}/${widget.totalSlides}', style: TextStyle(fontSize: 14, color: Colors.grey.shade600, fontWeight: FontWeight.bold)),
       ],
     );
   }
 
-  Widget _buildBulletPoint(String text) {
-    final Color activeColor = widget.moduleColor ?? Colors.blue.shade600;
+  Widget _buildTableCell(String text, {bool isHeader = false}) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(top: 6, right: 12),
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: activeColor,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade700,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.all(12),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 14, fontWeight: isHeader ? FontWeight.bold : FontWeight.normal, color: isHeader ? Colors.purple.shade700 : Colors.grey.shade800),
+        textAlign: TextAlign.center,
       ),
-    );
-  }
-
-  Widget _buildAchievementPoint(String text) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Icon(
-            Icons.check_circle,
-            color: Colors.green.shade600,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade700,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavigationButtons() {
-    return Row(
-      children: [
-        // Previous button
-        if (widget.currentSlide > 0)
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: widget.onPrevious,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey.shade600,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              icon: const Icon(Icons.arrow_back),
-              label: const Text('Indietro'),
-            ),
-          )
-        else
-          const Expanded(child: SizedBox()),
-        
-        const SizedBox(width: 15),
-        
-        // Next/Complete button
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: widget.currentSlide < widget.totalSlides - 1 
-                ? widget.onNext 
-                : widget.onComplete,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: widget.currentSlide < widget.totalSlides - 1 
-                  ? Colors.blue.shade600 
-                  : Colors.green.shade600,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            icon: Icon(
-              widget.currentSlide < widget.totalSlides - 1 
-                  ? Icons.arrow_forward 
-                  : Icons.check,
-            ),
-            label: Text(
-              widget.currentSlide < widget.totalSlides - 1 
-                  ? 'Avanti' 
-                  : 'Completa',
-            ),
-          ),
-        ),
-      ],
     );
   }
 

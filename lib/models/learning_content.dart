@@ -58,174 +58,168 @@ class LearningModule {
 class LearningModules {
   static final List<LearningModule> modules = [
     
-    // MODULO 1: Cos'è un gioco strategico
+    // MODULO 1: Introduzione alla Teoria dei Giochi
     LearningModule(
-      id: 'strategic-games',
-      title: 'Cos\'è un gioco strategico',
-      description: 'Definizione di gioco, giocatori, strategie e payoff',
+      id: 'game-theory-intro',
+      title: 'Introduzione alla Teoria dei Giochi',
+      description: 'Comprendere cos’è la teoria dei giochi, come funziona e perché è utile nella vita quotidiana e nel lavoro.',
       iconData: 'psychology',
       color: 'blue',
-      estimatedMinutes: 15,
+      estimatedMinutes: 12,
       difficulty: 'Facile',
       slides: [
         LearningSlide(
-          id: 'strategic-welcome',
-          title: 'Benvenuto nei Giochi Strategici! 🎯',
-          content: 'Scopriamo insieme il mondo affascinante della teoria dei giochi!',
+          id: 'gt-welcome',
+          title: 'Benvenuto nella Teoria dei Giochi 🎯',
+          content: 'Scopriamo come le decisioni interagiscono tra persone, aziende, algoritmi…',
           type: SlideType.intro,
           iconData: 'games',
-          bulletPoints: [
-            'I giochi sono ovunque nella vita quotidiana',
-            'Non solo videogame o giochi da tavolo',
-            'Anche le decisioni di tutti i giorni!',
-          ],
         ),
         LearningSlide(
-          id: 'strategic-everyday',
-          title: 'Giochi nella Vita Quotidiana 🌟',
-          content: 'Ti sei mai chiesto perché certe situazioni sembrano così complicate?',
+          id: 'gt-ubiquity',
+          title: 'Giochi ovunque 🌟',
+          content: 'Esempi quotidiani di giochi strategici: traffico, scelta del ristorante, scelte di acquisto.',
           type: SlideType.concept,
           iconData: 'psychology',
           bulletPoints: [
-            '🚗 Scegliere quale strada prendere nel traffico',
-            '🍕 Decidere cosa ordinare quando siete in gruppo',
-            '📱 Comprare il nuovo telefono: aspetto o compro ora?',
-            '⚽ Durante una partita: passare o tirare?',
+            '🚗 Traffico e scelta della strada',
+            '🍽️ Decidere dove mangiare in gruppo',
+            '📱 Scelte d’acquisto tra alternative',
           ],
         ),
         LearningSlide(
-          id: 'strategic-definition',
-          title: 'Elementi di un Gioco Strategico �',
-          content: 'Ogni gioco strategico ha sempre questi 4 elementi fondamentali:',
+          id: 'gt-definition',
+          title: 'Definizione di Gioco 📋',
+          content: 'Un gioco è composto da giocatori, strategie, payoff e regole.',
           type: SlideType.concept,
           iconData: 'list',
           bulletPoints: [
-            '👥 **Giocatori**: Chi prende le decisioni',
-            '🎯 **Strategie**: Le scelte disponibili',
-            '🏆 **Payoff**: I risultati che ottieni',
-            '📋 **Regole**: Come interagiscono le decisioni',
+            '👥 Giocatori',
+            '🎯 Strategie',
+            '🏆 Payoff',
+            '📋 Regole'
           ],
         ),
         LearningSlide(
-          id: 'strategic-players',
-          title: 'Chi Sono i Giocatori? 👥',
-          content: 'I giocatori possono essere chiunque prenda decisioni strategiche',
+          id: 'gt-players',
+          title: 'I Giocatori 👥',
+          content: 'Chi prende decisioni: individui, aziende, governi, algoritmi.',
           type: SlideType.concept,
-          iconData: 'people',
+          iconData: 'groups',
           bulletPoints: [
-            '🧒 Individui: tu, i tuoi amici, la famiglia',
-            '� Aziende: che competono per i clienti',
-            '🏛️ Governi: che prendono decisioni politiche',
-            '🤖 Algoritmi: nei sistemi automatici',
+            '🧑 Individui',
+            '🏢 Aziende',
+            '🏛️ Governi',
+            '🤖 Algoritmi'
           ],
-          example: 'In una partita di calcio, i giocatori sono le due squadre che decidono la strategia di gioco',
         ),
         LearningSlide(
-          id: 'strategic-strategies',
-          title: 'Cosa Sono le Strategie? �',
-          content: 'Le strategie sono tutte le azioni possibili che un giocatore può scegliere',
+          id: 'gt-strategies',
+          title: 'Strategie 🔄',
+          content: 'Tutte le possibili azioni che un giocatore può fare.',
           type: SlideType.concept,
           iconData: 'route',
           bulletPoints: [
-            '📝 Piano completo di azione',
-            '🔄 Può cambiare durante il gioco',
-            '🤝 Può essere cooperativa o competitiva',
-            '🎲 Può includere elementi casuali',
+            '📝 Piani d’azione possibili',
+            '🔄 Possono cambiare durante il gioco',
+            '🤝 Cooperative o competitive',
+            '🎲 Con elementi casuali'
           ],
-          example: 'Nel calcio: attaccare, difendere, contropiede sono strategie diverse',
         ),
         LearningSlide(
-          id: 'strategic-payoffs',
-          title: 'I Payoff: Cosa Ottieni? 🏆',
-          content: 'I payoff rappresentano i risultati che ogni giocatore ottiene',
+          id: 'gt-payoffs',
+          title: 'Payoff 🏆',
+          content: 'Risultati di ogni scelta: punti, soldi, soddisfazione.',
           type: SlideType.concept,
           iconData: 'emoji_events',
           bulletPoints: [
-            '💰 Non sempre denaro: può essere soddisfazione, tempo, punti',
-            '📊 Possono essere misurati in diversi modi',
-            '⚖️ Spesso ci sono trade-off: per vincere qualcosa, perdi altro',
-            '🎯 L\'obiettivo è massimizzare il proprio payoff',
+            '💰 Non sempre denaro',
+            '📊 Misurabili in modi diversi',
+            '⚖️ Trade-off tra opzioni',
+            '🎯 Obiettivo: massimizzare il payoff'
           ],
         ),
         LearningSlide(
-          id: 'strategic-example-rps',
-          title: 'Esempio Classico: Sasso, Carta, Forbici ✂️',
-          content: 'Analizziamo il gioco più famoso usando i nostri elementi!',
+          id: 'gt-rules',
+          title: 'Regole del Gioco 📋',
+          content: 'Come le decisioni interagiscono e quali vincoli ci sono.',
+          type: SlideType.concept,
+          iconData: 'table_chart',
+        ),
+        LearningSlide(
+          id: 'gt-competitive-cooperative',
+          title: 'Giochi Competitivi vs Cooperativi 🤝💥',
+          content: 'Differenza tra competizione e collaborazione nei giochi strategici.',
+          type: SlideType.concept,
+          iconData: 'handshake',
+          bulletPoints: [
+            'Competitivo: il vantaggio di uno è lo svantaggio dell’altro',
+            'Cooperativo: vantaggi reciproci possibili'
+          ],
+        ),
+        LearningSlide(
+          id: 'gt-simple-examples',
+          title: 'Esempi di Giochi Semplici 🎲',
+          content: 'Sasso-Carta-Forbici, scelta della strada nel traffico.',
           type: SlideType.example,
           iconData: 'back_hand',
           example: '''
-👥 **Giocatori**: Tu e un avversario
-
-🎯 **Strategie**: 
-• Sasso 🪨 (vince su Forbici)
-• Carta 📄 (vince su Sasso)  
-• Forbici ✂️ (vince su Carta)
-
-🏆 **Payoff**: 
-• Vinci = +1 punto 😊
-• Pareggi = 0 punti 😐  
-• Perdi = -1 punto 😞
-
-📋 **Regole**: Scelta simultanea, nessuno sa cosa fa l'altro
-          ''',
+    👥 Giocatori: tu e un avversario
+    🎯 Strategie: Sasso, Carta, Forbici
+    🏆 Payoff: Vinci = +1, Pareggi = 0, Perdi = -1
+    📋 Regole: Scelta simultanea
+    ''',
         ),
         LearningSlide(
-          id: 'strategic-example-traffic',
-          title: 'Esempio Reale: Il Traffico 🚗',
-          content: 'Anche scegliere la strada è un gioco strategico!',
-          type: SlideType.example,
-          iconData: 'traffic',
-          example: '''
-👥 **Giocatori**: Tutti gli automobilisti
-
-🎯 **Strategie**: 
-• Strada principale (più diretta ma può essere congestionata)
-• Strada alternativa (più lunga ma meno traffico)
-
-🏆 **Payoff**: 
-• Tempo di percorrenza minimizzato
-• Stress ridotto
-• Carburante risparmiato
-
-📋 **Regole**: Ognuno sceglie la sua strada, ma le scelte si influenzano a vicenda
-          ''',
-        ),
-        LearningSlide(
-          id: 'strategic-example-restaurant',
-          title: 'Esempio Quotidiano: Scegliere il Ristorante 🍽️',
-          content: 'Decidere dove mangiare con gli amici è più complesso di quanto pensi!',
-          type: SlideType.example,
-          iconData: 'restaurant',
-          example: '''
-👥 **Giocatori**: Tu e i tuoi amici
-
-🎯 **Strategie**: 
-• Pizza 🍕 (veloce, economico)
-• Sushi 🍣 (costoso, trendy)
-• Hamburger 🍔 (via di mezzo)
-
-🏆 **Payoff**: 
-• Soddisfazione del cibo
-• Costo sostenibile  
-• Tempo disponibile
-• Approvazione del gruppo
-
-📋 **Regole**: Si decide insieme, tutti devono essere d'accordo
-          ''',
-        ),
-        LearningSlide(
-          id: 'strategic-summary',
-          title: 'Riassunto: Hai Imparato a Riconoscere i Giochi! 🌟',
-          content: 'Ora sai identificare i giochi strategici ovunque nella vita quotidiana.',
-          type: SlideType.summary,
-          iconData: 'lightbulb',
-          quote: '"Ogni volta che la tua decisione dipende da quella di qualcun altro, stai giocando un gioco strategico!"',
+          id: 'gt-simultaneous-sequential',
+          title: 'Giochi Simultanei vs Sequenziali ⏱️',
+          content: 'Spiegare quando si sceglie senza sapere cosa fa l’altro o a turni.',
+          type: SlideType.concept,
+          iconData: 'auto_stories',
           bulletPoints: [
-            '✅ Conosci i 4 elementi fondamentali di ogni gioco',
-            '✅ Sai riconoscere giocatori, strategie e payoff',
-            '✅ Hai visto esempi dalla vita reale',
-            '✅ Sei pronto per approfondire giochi più complessi!',
-            '🚀 Il prossimo passo: il famoso Dilemma del Prigioniero',
+            'Simultaneo: decisione contemporanea',
+            'Sequenziale: decisione a turni'
+          ],
+        ),
+        LearningSlide(
+          id: 'gt-zero-sum',
+          title: 'Giochi a Somma Zero 0️⃣',
+          content: 'Il vantaggio di uno è lo svantaggio dell’altro.',
+          type: SlideType.concept,
+          iconData: 'balance',
+        ),
+        LearningSlide(
+          id: 'gt-nonzero-sum',
+          title: 'Giochi a Somma Non Zero ➕',
+          content: 'Possibilità di vantaggi reciproci.',
+          type: SlideType.concept,
+          iconData: 'groups',
+        ),
+        LearningSlide(
+          id: 'gt-dominant-strategy',
+          title: 'Strategia Dominante ⭐',
+          content: 'Che cos’è e come riconoscerla.',
+          type: SlideType.concept,
+          iconData: 'lightbulb',
+        ),
+        LearningSlide(
+          id: 'gt-nash-intro',
+          title: 'Equilibrio di Nash (introduzione) ⚖️',
+          content: 'Quando nessuno vuole cambiare strategia da solo.',
+          type: SlideType.concept,
+          iconData: 'psychology',
+        ),
+        LearningSlide(
+          id: 'gt-summary',
+          title: 'Riassunto 🌟',
+          content: 'Riepilogo concetti base, pronto per approfondire il Dilemma del Prigioniero.',
+          type: SlideType.summary,
+          iconData: 'celebration',
+          bulletPoints: [
+            '✅ Cos’è un gioco strategico',
+            '✅ Giocatori, strategie e payoff',
+            '✅ Giochi competitivi, cooperativi, zero-sum e non-zero-sum',
+            '✅ Introduzione all’equilibrio di Nash e strategia dominante'
           ],
         ),
       ],
@@ -235,520 +229,269 @@ class LearningModules {
     LearningModule(
       id: 'prisoner-dilemma',
       title: 'Il Dilemma del Prigioniero',
-      description: 'Il gioco più famoso della teoria dei giochi',
+      description: 'Spiegazione dettagliata del Dilemma del Prigioniero e delle sue implicazioni pratiche.',
       iconData: 'balance',
       color: 'purple',
-      estimatedMinutes: 18,
+      estimatedMinutes: 10,
       difficulty: 'Medio',
       slides: [
         LearningSlide(
-          id: 'prisoner-intro',
-          title: 'La Storia che Ha Cambiato Tutto 📖',
-          content: 'Benvenuto nel gioco più famoso e studiato della teoria dei giochi!',
+          id: 'pd-intro',
+          title: 'Introduzione al Dilemma 📖',
+          content: 'Breve storia: due prigionieri devono scegliere tra cooperare o tradire.',
           type: SlideType.intro,
           iconData: 'auto_stories',
-          bulletPoints: [
-            '📅 Inventato nel 1950 alla RAND Corporation',
-            '🏆 Il gioco più analizzato nella storia',
-            '🤝 Spiega il conflitto tra interesse individuale e collettivo',
-            '🌍 Applicabile a tantissime situazioni reali',
-          ],
         ),
         LearningSlide(
-          id: 'prisoner-story-original',
-          title: 'La Storia Originale: Due Prigionieri 👮‍♂️',
-          content: 'Immagina questa situazione drammatica...',
+          id: 'pd-scenario',
+          title: 'Scenario del Dilemma 🏛️',
+          content: 'Racconto semplice e intuitivo della situazione tra due complici arrestati.',
           type: SlideType.concept,
           iconData: 'account_balance',
-          example: '''
-**La Situazione**: 
-Due complici vengono arrestati per un crimine. La polizia li interroga separatamente e non possono comunicare.
-
-**L'Offerta del Procuratore**:
-"Abbiamo prove sufficienti per condannarvi a 1 anno. Ma se collabori..."
-
-**Le Opzioni**:
-• Stare zitto (Cooperare con il complice)
-• Testimoniare contro l'altro (Tradire il complice)
-          ''',
         ),
         LearningSlide(
-          id: 'prisoner-payoffs',
-          title: 'I Possibili Risultati 📊',
-          content: 'Vediamo cosa succede in ogni scenario:',
+          id: 'pd-choices',
+          title: 'Scelte dei Giocatori 🔄',
+          content: 'Cooperare o tradire: cosa significa nella pratica per ciascun giocatore.',
           type: SlideType.concept,
-          iconData: 'gavel',
+          iconData: 'swap_horiz',
+        ),
+        LearningSlide(
+          id: 'pd-payoff',
+          title: 'Payoff della Scelta 📊',
+          content: 'Tabelle dei risultati: vinci, perdi, pareggi.',
+          type: SlideType.concept,
+          iconData: 'table_chart',
           bulletPoints: [
-            '🤐🤐 **Entrambi stanno zitti**: 1 anno di prigione ciascuno',
-            '🤐😠 **Uno zitto, uno parla**: 0 anni per chi parla, 3 anni per l\'altro',
-            '😠🤐 **Uno parla, uno zitto**: 3 anni per chi sta zitto, 0 anni per chi parla',
-            '😠😠 **Entrambi parlano**: 2 anni di prigione ciascuno',
+            '🤐🤐 Entrambi cooperano: risultato positivo moderato',
+            '🤐😠 Uno coopera, l’altro tradisce: vantaggio per chi tradisce',
+            '😠😠 Entrambi tradiscono: peggior risultato per entrambi',
           ],
         ),
         LearningSlide(
-          id: 'prisoner-matrix',
-          title: 'La Matrice del Dilemma 🎯',
-          content: 'Organizziamo tutti i risultati in una tabella per vedere meglio!',
-          type: SlideType.interactive,
-          iconData: 'table_chart',
-          example: '''
-                 | Complice: Tace | Complice: Parla
-Tu: Taci       |    (-1, -1)    |    (-3, 0)
-Tu: Parli      |    (0, -3)     |    (-2, -2)
-
-Legenda: (Anni di prigione per te, Anni per il complice)
-          ''',
+          id: 'pd-dominant-strategy',
+          title: 'Strategia Dominante ⭐',
+          content: 'Analisi: tradire è sempre meglio? Spiegazione intuitiva.',
+          type: SlideType.concept,
+          iconData: 'lightbulb',
         ),
         LearningSlide(
-          id: 'prisoner-dilemma-core',
-          title: 'Dov\'è il Dilemma? 🤔',
-          content: 'Ecco il problema fondamentale che rende questo gioco così interessante:',
+          id: 'pd-equilibrium',
+          title: 'Equilibrio del Gioco ⚖️',
+          content: 'Equilibrio di Nash nel Dilemma del Prigioniero spiegato in modo semplice.',
           type: SlideType.concept,
           iconData: 'psychology',
-          bulletPoints: [
-            '🧠 **Ragionamento individuale**: "Meglio parlare, così al massimo prendo 2 anni"',
-            '🤝 **Ragionamento collettivo**: "Se stiamo entrambi zitti, prendiamo solo 1 anno"',
-            '⚖️ **Il paradosso**: La scelta "logica" porta al risultato peggiore per tutti!',
-            '💡 **Il dilemma**: Fidarsi dell\'altro o pensare solo a sé?',
-          ],
         ),
         LearningSlide(
-          id: 'prisoner-school-example',
-          title: 'Esempio Scolastico: Il Compito in Classe 📚',
-          content: 'Il dilemma del prigioniero nella vita di tutti i giorni!',
-          type: SlideType.example,
-          iconData: 'school',
-          example: '''
-**Situazione**: Tu e il tuo amico durante un compito difficile
-
-**Le Strategie**:
-• Cooperare = Non copiare, studiare onestamente
-• Tradire = Copiare/far copiare
-
-**I Risultati**:
-• Entrambi onesti = Voti giusti, prof contenta 😊
-• Tu onesto, lui copia = Lui ha voto alto, tu normale 😐
-• Tu copi, lui onesto = Tu hai voto alto, lui normale 😐  
-• Entrambi copiate = Rischio di essere scoperti! 😰
-          ''',
-        ),
-        LearningSlide(
-          id: 'prisoner-environmental',
-          title: 'Esempio Globale: L\'Ambiente 🌍',
-          content: 'Il cambiamento climatico è un gigantesco dilemma del prigioniero!',
+          id: 'pd-real-examples',
+          title: 'Esempi Reali 🌍',
+          content: 'Collaborazioni aziendali, traffico, negoziazioni.',
           type: SlideType.example,
           iconData: 'public',
-          example: '''
-**Giocatori**: Tutti i paesi del mondo
-
-**Strategie**:
-• Cooperare = Ridurre le emissioni (costa soldi)
-• Tradire = Continuare a inquinare (risparmi soldi)
-
-**Risultati**:
-• Tutti riducono = Pianeta salvato! 🌱
-• Alcuni riducono, altri no = Sacrificio inutile 😤
-• Nessuno riduce = Disastro ambientale per tutti �
-
-**Il Dilemma**: Perché dovrei sacrificarmi se gli altri non lo fanno?
-          ''',
         ),
         LearningSlide(
-          id: 'prisoner-social-media',
-          title: 'Esempio Digitale: I Social Media 📱',
-          content: 'Anche online incontriamo questo dilemma ogni giorno!',
-          type: SlideType.example,
-          iconData: 'smartphone',
-          example: '''
-**Situazione**: Condividere informazioni personali online
-
-**Strategie**:
-• Cooperare = Condividere responsabilmente, rispettare la privacy
-• Tradire = Condividere tutto per likes, gossip, visibilità
-
-**Risultati**:
-• Tutti responsabili = Internet sicuro e piacevole 😊
-• Alcuni responsabili, altri no = Ambiente tossico 😕
-• Nessuno responsabile = Cyberbullismo e problemi per tutti 😰
-
-**Il Dilemma**: "Se non posto tutto della mia vita, avrò meno followers!"
-          ''',
-        ),
-        LearningSlide(
-          id: 'prisoner-sports',
-          title: 'Esempio Sportivo: Il Doping 🏃‍♂️',
-          content: 'Lo sport ci mostra chiaramente come funziona questo dilemma',
-          type: SlideType.example,
-          iconData: 'directions_run',
-          example: '''
-**Giocatori**: Tutti gli atleti di uno sport
-
-**Strategie**:
-• Cooperare = Gareggiare pulito, senza doping
-• Tradire = Usare sostanze per avere vantaggi
-
-**Risultati**:
-• Tutti puliti = Competizione equa e sport sano 🏆
-• Alcuni puliti, altri no = Gara ingiusta 😠
-• Tutti "sporchi" = Sport rovinato, rischi per la salute ⚠️
-
-**Il Dilemma**: "Se non mi dopo, come posso competere con chi lo fa?"
-          ''',
-        ),
-        LearningSlide(
-          id: 'prisoner-summary',
-          title: 'Riassunto: Il Cuore del Conflitto Umano 💫',
-          content: 'Hai scoperto uno dei meccanismi più profondi delle relazioni umane!',
-          type: SlideType.summary,
-          iconData: 'favorite',
-          quote: '"Il dilemma del prigioniero ci insegna che quello che è razionale per l\'individuo può essere irrazionale per il gruppo."',
-          bulletPoints: [
-            '✅ Hai capito la storia originale e la sua logica',
-            '✅ Hai visto la matrice dei payoff e il paradosso',
-            '✅ Hai riconosciuto il dilemma in scuola, ambiente, sport, web',
-            '✅ Capisci perché la cooperazione è difficile ma importante',
-            '🔍 Prossimo step: scoprire le strategie per risolverlo!',
-          ],
-        ),
-      ],
-    ),
-
-    // MODULO 3: Strategia Dominante
-    LearningModule(
-      id: 'dominant-strategy',
-      title: 'Strategia Dominante',
-      description: 'Quando una strategia è sempre la migliore',
-      iconData: 'trending_up',
-      color: 'green',
-      estimatedMinutes: 15,
-      difficulty: 'Medio',
-      slides: [
-        LearningSlide(
-          id: 'dominant-intro',
-          title: 'La Strategia Imbattibile! 🏆',
-          content: 'Ti piacerebbe avere una strategia che vince sempre, qualunque cosa facciano gli altri?',
-          type: SlideType.intro,
-          iconData: 'emoji_events',
-          bulletPoints: [
-            '💪 Scopri le strategie super-potenti',
-            '🎯 Quando una scelta batte tutte le altre',
-            '🔍 Come riconoscerle nei tuoi giochi',
-            '⚡ Il potere di semplificare le decisioni',
-          ],
-        ),
-        LearningSlide(
-          id: 'dominant-definition',
-          title: 'Che cos\'è una Strategia Dominante? 🎯',
-          content: 'È una strategia che ti dà sempre il risultato migliore, indipendentemente da quello che fanno gli altri!',
-          type: SlideType.concept,
-          iconData: 'star',
-          bulletPoints: [
-            '🥇 **Sempre vincente**: Batte ogni altra tua strategia',
-            '🤷‍♀️ **Indipendente**: Non importa cosa fanno gli avversari',
-            '🧠 **Semplifica**: Rende la scelta ovvia',
-            '💎 **Rara**: Non esiste sempre, ma quando c\'è è preziosa',
-          ],
-        ),
-        LearningSlide(
-          id: 'dominant-types',
-          title: 'Due Tipi di Dominanza 📊',
-          content: 'Esistono due livelli di "potenza" per le strategie dominanti:',
-          type: SlideType.concept,
-          iconData: 'assessment',
-          bulletPoints: [
-            '💯 **Strettamente Dominante**: Sempre rigorosamente migliore',
-            '📈 **Debolmente Dominante**: Sempre almeno uguale, a volte migliore',
-            '🔄 **Dominata**: Una strategia sempre peggiore di un\'altra',
-            '❌ **Irrazionale**: Giocare una strategia dominata non ha senso',
-          ],
-        ),
-        LearningSlide(
-          id: 'dominant-example-simple',
-          title: 'Esempio Semplicissimo: 1€ vs 2€ 💰',
-          content: 'Il caso più ovvio di strategia dominante!',
-          type: SlideType.example,
-          iconData: 'euro',
-          example: '''
-**Situazione**: Ti offrono di scegliere tra 1€ o 2€
-
-**Le tue strategie**:
-• Prendere 1€
-• Prendere 2€
-
-**Analisi**:
-Non importa cosa fanno gli altri, cosa pensa il pubblico, che giorno è...
-2€ > 1€ SEMPRE!
-
-**Conclusione**: Prendere 2€ è una strategia strettamente dominante
-          ''',
-        ),
-        LearningSlide(
-          id: 'dominant-example-prisoner',
-          title: 'Esempio: Il Dilemma del Prigioniero 🤖',
-          content: 'Nel famoso dilemma, tradire è spesso una strategia dominante!',
-          type: SlideType.example,
-          iconData: 'smart_toy',
-          example: '''
-**Se l'altro coopera**: 
-• Tu cooperi = 3 punti (bene)
-• Tu tradisci = 5 punti (meglio!) ✅
-
-**Se l'altro tradisce**:
-• Tu cooperi = 0 punti (male)
-• Tu tradisci = 1 punto (meglio!) ✅
-
-**Conclusione**: Tradire vince sempre dal punto di vista individuale
-**Ma attenzione**: Porta al risultato peggiore per entrambi!
-          ''',
-        ),
-        LearningSlide(
-          id: 'dominant-example-auction',
-          title: 'Esempio: L\'Asta Sigillata 📮',
-          content: 'Nelle aste c\'è una strategia dominante sorprendente!',
-          type: SlideType.example,
-          iconData: 'gavel',
-          example: '''
-**Situazione**: Asta per un oggetto che vale 100€ per te
-
-**Strategie possibili**:
-• Offrire meno di 100€ (es. 50€, 80€, 90€)
-• Offrire esattamente 100€
-• Offrire più di 100€ (es. 120€)
-
-**Strategia dominante**: Offrire esattamente quello che vale per te (100€)
-• Se vinci pagando meno = profitto!
-• Se vinci pagando uguale = nessuna perdita
-• Se perdi = almeno non hai pagato troppo
-          ''',
-        ),
-        LearningSlide(
-          id: 'dominant-example-school',
-          title: 'Esempio Scolastico: La Preparazione 📚',
-          content: 'A scuola trovi spesso strategie dominanti!',
-          type: SlideType.example,
-          iconData: 'school',
-          example: '''
-**Situazione**: Domani c\'è il compito in classe
-
-**Le tue strategie**:
-• Non studiare affatto 😴
-• Studiare un po\' 📖  
-• Studiare molto 📚💪
-
-**Analisi**:
-• Studiare di più = sempre voto migliore (o almeno uguale)
-• Non importa quanto difficili sono le domande
-• Non importa quanto studiano gli altri
-
-**Strategia dominante**: Studiare il più possibile!
-          ''',
-        ),
-        LearningSlide(
-          id: 'dominant-elimination',
-          title: 'Eliminazione delle Strategie Dominate 🗑️',
-          content: 'Un trucco potente: elimina le strategie stupide per semplificare il gioco!',
-          type: SlideType.concept,
-          iconData: 'delete_sweep',
-          bulletPoints: [
-            '❌ **Passo 1**: Trova strategie dominate (sempre peggiori)',
-            '🗑️ **Passo 2**: Eliminale dal gioco (nessuno le userebbe)',
-            '🔄 **Passo 3**: Ripeti il processo nel gioco semplificato',
-            '🎯 **Risultato**: Arrivi alla soluzione per eliminazione!',
-          ],
-        ),
-        LearningSlide(
-          id: 'dominant-limitations',
-          title: 'Quando NON Esiste la Strategia Dominante ❓',
-          content: 'Purtroppo non sempre c\'è una strategia che vince sempre...',
-          type: SlideType.concept,
-          iconData: 'help_outline',
-          bulletPoints: [
-            '🪨📄✂️ **Sasso-Carta-Forbici**: Ogni strategia ha punti deboli',
-            '⚽ **Calcio**: Attaccare o difendere dipende dall\'avversario',
-            '🎵 **Musica**: Il genere migliore dipende dai gusti',
-            '🤝 **In questi casi**: Servono strategie più sofisticate',
-          ],
-        ),
-        LearningSlide(
-          id: 'dominant-summary',
-          title: 'Riassunto: Il Potere della Semplicità ⚡',
-          content: 'Hai imparato a riconoscere e usare le strategie più potenti!',
-          type: SlideType.summary,
-          iconData: 'military_tech',
-          quote: '"Una strategia dominante è come avere un superpotere: vinci sempre!"',
-          bulletPoints: [
-            '✅ Conosci i due tipi di dominanza: stretta e debole',
-            '✅ Sai riconoscere le strategie dominate da eliminare',
-            '✅ Hai visto esempi da soldi, prigioni, aste, scuola',
-            '✅ Capisci quando non esistono strategie dominanti',
-            '🎯 Prossimo livello: Equilibrio di Nash per i giochi complessi!',
-          ],
-        ),
-      ],
-    ),
-
-    // MODULO 4: Equilibrio di Nash
-    LearningModule(
-      id: 'nash-equilibrium',
-      title: 'Equilibrio di Nash',
-      description: 'Quando nessun giocatore vuole cambiare strategia',
-      iconData: 'center_focus_strong',
-      color: 'orange',
-      estimatedMinutes: 12,
-      difficulty: 'Difficile',
-      slides: [
-        LearningSlide(
-          id: 'nash-intro',
-          title: 'Il Genio John Nash 🧠',
-          content: 'Scopri l\'idea che ha vinto il Premio Nobel e rivoluzionato la matematica!',
-          type: SlideType.intro,
-          iconData: 'school',
-          bulletPoints: [
-            'John Nash: matematico geniale',
-            'Ha inventato un concetto rivoluzionario',
-            'Usato in economia, politica, biologia',
-            'Hai visto il film "A Beautiful Mind"?',
-          ],
-        ),
-        LearningSlide(
-          id: 'nash-definition',
-          title: 'Che cos\'è l\'Equilibrio di Nash? ⚖️',
-          content: 'È quando tutti i giocatori hanno scelto la strategia migliore data la scelta degli altri.',
-          type: SlideType.concept,
-          iconData: 'balance',
-          example: '''
-**L'idea principale**:
-Nessuno vuole cambiare la sua strategia se tutti gli altri mantengono la loro.
-
-**Come una danza perfetta**: 
-Ogni ballerino fa la mossa giusta per non pestare i piedi agli altri!
-          ''',
-        ),
-        LearningSlide(
-          id: 'nash-traffic',
-          title: 'Esempio: Il Traffico 🚗',
-          content: 'Tutti i giorni vivi un equilibrio di Nash andando a scuola!',
-          type: SlideType.example,
-          iconData: 'traffic',
-          example: '''
-**La Situazione**:
-Tutti devono scegliere che strada fare per andare a scuola.
-
-**L'Equilibrio**:
-Quando il traffico si stabilizza, nessuno vuole cambiare strada, perché le altre sono altrettanto trafficate!
-
-Se cambiassi strada, non andresti più veloce.
-          ''',
-        ),
-        LearningSlide(
-          id: 'nash-prisoner',
-          title: 'Nash nel Dilemma del Prigioniero 🔒',
-          content: 'Il dilemma ha un equilibrio di Nash, ma non è il migliore per tutti!',
-          type: SlideType.interactive,
-          iconData: 'quiz',
-          interactiveData: {
-            'question': 'Qual è l\'equilibrio di Nash nel Dilemma del Prigioniero?',
-            'options': [
-              'Entrambi cooperano',
-              'Entrambi tradiscono', 
-              'Uno coopera, uno tradisce',
-              'Non c\'è equilibrio'
-            ],
-            'correct': 1,
-            'explanation': 'Entrambi tradiscono! Nessuno vuole cambiare perché cooperare sarebbe peggio.'
-          },
-        ),
-        LearningSlide(
-          id: 'nash-summary',
-          title: 'Complimenti, Matematico! 🎓',
-          content: 'Hai capito uno dei concetti più importanti della matematica moderna!',
-          type: SlideType.summary,
-          iconData: 'celebration',
-          quote: '"L\'equilibrio di Nash ci aiuta a capire perché il mondo funziona come funziona."',
-          bulletPoints: [
-            'Conosci John Nash e la sua grande idea',
-            'Sai riconoscere un equilibrio di Nash',
-            'Hai visto esempi dalla vita reale',
-            'Capisci che non sempre è il meglio per tutti',
-          ],
-        ),
-      ],
-    ),
-
-    // MODULO 5: Giochi Ripetuti e Fiducia
-    LearningModule(
-      id: 'repeated-games',
-      title: 'Giochi Ripetuti e Fiducia',
-      description: 'Come la reputazione cambia tutto',
-      iconData: 'repeat',
-      color: 'red',
-      estimatedMinutes: 8,
-      difficulty: 'Medio',
-      slides: [
-        LearningSlide(
-          id: 'repeated-intro',
-          title: 'Quando Giochi Ancora e Ancora... 🔄',
-          content: 'Cosa succede quando incontri la stessa persona molte volte? Tutto cambia!',
-          type: SlideType.intro,
-          iconData: 'refresh',
-          bulletPoints: [
-            'I giochi una tantum vs giochi ripetuti',
-            'Perché la reputazione conta',
-            'Il potere della cooperazione',
-          ],
-        ),
-        LearningSlide(
-          id: 'repeated-friendship',
-          title: 'Esempio: L\'Amicizia 👫',
-          content: 'L\'amicizia è un gioco ripetuto dove la fiducia cresce nel tempo!',
-          type: SlideType.example,
-          iconData: 'favorite',
-          example: '''
-**Gioco una tantum**: 
-Incontri qualcuno per la prima volta. Forse ti comporti male perché non lo rivedrai mai.
-
-**Gioco ripetuto**:
-Vai a scuola con la stessa persona ogni giorno. Se ti comporti male, lei se lo ricorderà domani!
-
-La **reputazione** diventa importante.
-          ''',
-        ),
-        LearningSlide(
-          id: 'repeated-titfortat',
-          title: 'La Strategia "Tit-for-Tat" 🤝',
-          content: 'La strategia più vincente nei giochi ripetuti!',
+          id: 'pd-coop-vs-defect',
+          title: 'Cooperazione vs Tradimento 🤝💥',
+          content: 'Quando conviene cooperare? Quando tradire?',
           type: SlideType.concept,
           iconData: 'handshake',
-          example: '''
-**Come funziona Tit-for-Tat**:
-1. **Primo turno**: Sempre coopera
-2. **Turni successivi**: Fai quello che ha fatto l'altro nell'ultimo turno
-
-**Esempio**:
-• Turno 1: Tu cooperi
-• Turno 2: Se lui ha cooperato, tu cooperi
-• Turno 3: Se lui ha tradito, tu tradisci
-• Turno 4: Se lui torna a cooperare, tu cooperi
-
-È **gentile**, **vendicativa** e **clemente**!
-          ''',
         ),
         LearningSlide(
-          id: 'repeated-summary',
-          title: 'La Magia della Ripetizione! ✨',
-          content: 'Hai scoperto perché la fiducia e la reputazione sono così importanti!',
+          id: 'pd-repeated',
+          title: 'Ripetizione del Gioco 🔁',
+          content: 'Giochi ripetuti: possibilità di strategie diverse e reputazione.',
+          type: SlideType.concept,
+          iconData: 'replay',
+        ),
+        LearningSlide(
+          id: 'pd-reciprocity',
+          title: 'Strategie di Reciprocità 🤝',
+          content: 'Tit for Tat: spiegazione semplice del concetto.',
+          type: SlideType.concept,
+          iconData: 'repeat',
+        ),
+        LearningSlide(
+          id: 'pd-reputation',
+          title: 'Effetto Reputazione 🌟',
+          content: 'Come le scelte influenzano le decisioni future dei giocatori.',
+          type: SlideType.concept,
+          iconData: 'star',
+        ),
+        LearningSlide(
+          id: 'pd-social-applications',
+          title: 'Applicazioni Sociali 👥',
+          content: 'Amicizia, lavoro di squadra, comunità.',
+          type: SlideType.example,
+          iconData: 'groups',
+        ),
+        LearningSlide(
+          id: 'pd-economic-applications',
+          title: 'Applicazioni Economiche 💰',
+          content: 'Mercati, negoziazioni, pubblicità competitiva.',
+          type: SlideType.example,
+          iconData: 'shopping_cart',
+        ),
+        LearningSlide(
+          id: 'pd-practical-exercise',
+          title: 'Esercizio Pratico 📝',
+          content: 'Piccolo gioco interattivo per capire i payoff e le scelte.',
+          type: SlideType.interactive,
+          iconData: 'gamepad',
+        ),
+        LearningSlide(
+          id: 'pd-summary',
+          title: 'Riassunto 💫',
+          content: 'Concetti chiave del Dilemma del Prigioniero e takeaway principali.',
           type: SlideType.summary,
-          iconData: 'auto_awesome',
-          quote: '"Nei giochi ripetuti, essere gentili ma non ingenui è la strategia vincente!"',
+          iconData: 'celebration',
           bulletPoints: [
-            'I giochi ripetuti cambiano tutto',
-            'La reputazione diventa un\'arma potente',
-            'Tit-for-Tat è spesso la strategia migliore',
-            'La cooperazione può emergere naturalmente',
+            '✅ Storia e scenario originale',
+            '✅ Matrice dei payoff e strategia dominante',
+            '✅ Applicazioni reali in scuola, economia e società',
+            '✅ Capire perché la cooperazione è difficile ma importante',
           ],
         ),
       ],
     ),
+
+    // MODULO 3: Espansione e Applicazioni della Teoria dei Giochi
+    LearningModule(
+      id: 'games-expansion',
+      title: 'Espansione e Applicazioni della Teoria dei Giochi',
+      description: 'Altri giochi, scenari e come la teoria dei giochi aiuta nelle decisioni quotidiane e professionali.',
+      iconData: 'explore',
+      color: 'green',
+      estimatedMinutes: 12,
+      difficulty: 'Medio',
+      slides: [
+        LearningSlide(
+          id: 'expansion-welcome',
+          title: 'Benvenuto! 🌟',
+          content: 'Introduzione agli scenari più complessi della teoria dei giochi.',
+          type: SlideType.intro,
+          iconData: 'emoji_objects',
+        ),
+        LearningSlide(
+          id: 'expansion-coordination',
+          title: 'Giochi di Coordinamento 🔗',
+          content: 'Come le persone cercano di coordinarsi: esempi pratici come orari dei treni.',
+          type: SlideType.concept,
+          iconData: 'train',
+        ),
+        LearningSlide(
+          id: 'expansion-zero-sum',
+          title: 'Giochi a Somma Zero ⚔️',
+          content: 'Rivedere con esempi pratici: scacchi, mercati competitivi.',
+          type: SlideType.concept,
+          iconData: 'sports_esports',
+        ),
+        LearningSlide(
+          id: 'expansion-non-zero-sum',
+          title: 'Giochi a Somma Non Zero 🤝',
+          content: 'Collaborazione tra aziende, progetti condivisi e risultati vantaggiosi per tutti.',
+          type: SlideType.concept,
+          iconData: 'groups',
+        ),
+        LearningSlide(
+          id: 'expansion-repeated-games',
+          title: 'Giochi Ripetuti 🔁',
+          content: 'Differenza tra giochi singoli e ripetuti, e come le strategie cambiano.',
+          type: SlideType.concept,
+          iconData: 'repeat',
+        ),
+        LearningSlide(
+          id: 'expansion-evolutionary',
+          title: 'Giochi Evolutivi 🧬',
+          content: 'Breve introduzione alla selezione di strategie vincenti nel tempo.',
+          type: SlideType.concept,
+          iconData: 'trending_up',
+        ),
+        LearningSlide(
+          id: 'expansion-chicken-game',
+          title: 'Il Gioco del Pollo 🐓',
+          content: 'Scenario conflittuale semplice, parallelo al Dilemma del Prigioniero.',
+          type: SlideType.example,
+          iconData: 'sports_motorsports',
+        ),
+        LearningSlide(
+          id: 'expansion-mixed-strategy',
+          title: 'Strategia Mista 🎲',
+          content: 'Quando mescolare strategie può essere vantaggioso.',
+          type: SlideType.concept,
+          iconData: 'casino',
+        ),
+        LearningSlide(
+          id: 'expansion-correlated-equilibrium',
+          title: 'Equilibrio Correlato 📡',
+          content: 'Concetto intuitivo: quando le scelte sono condizionate da segnali esterni.',
+          type: SlideType.concept,
+          iconData: 'signal_cellular_alt',
+        ),
+        LearningSlide(
+          id: 'expansion-multiplayer',
+          title: 'Giochi con Più Giocatori 👥',
+          content: 'Introduzione ai giochi multiplayer, non solo 2 giocatori.',
+          type: SlideType.concept,
+          iconData: 'people_alt',
+        ),
+        LearningSlide(
+          id: 'expansion-communication',
+          title: 'Comunicazione nei Giochi 🗣️',
+          content: 'Come parlare può cambiare le strategie e gli esiti.',
+          type: SlideType.concept,
+          iconData: 'chat',
+        ),
+        LearningSlide(
+          id: 'expansion-bluff',
+          title: 'Bluff e Inganno 🃏',
+          content: 'Spiegazione pratica del bluff senza matematica avanzata.',
+          type: SlideType.concept,
+          iconData: 'mood',
+        ),
+        LearningSlide(
+          id: 'expansion-business',
+          title: 'Applicazioni Aziendali 💼',
+          content: 'Pricing, concorrenza, partnership strategiche.',
+          type: SlideType.example,
+          iconData: 'business_center',
+        ),
+        LearningSlide(
+          id: 'expansion-social',
+          title: 'Applicazioni Sociali 👥',
+          content: 'Cooperazione, fiducia e dinamiche di gruppo.',
+          type: SlideType.example,
+          iconData: 'groups',
+        ),
+        LearningSlide(
+          id: 'expansion-political',
+          title: 'Applicazioni Politiche 🏛️',
+          content: 'Elezioni, accordi internazionali, negoziazioni.',
+          type: SlideType.example,
+          iconData: 'gavel',
+        ),
+        LearningSlide(
+          id: 'expansion-mini-exercise',
+          title: 'Mini Esercizio 📝',
+          content: 'Piccolo gioco interattivo o scenario da risolvere per applicare i concetti.',
+          type: SlideType.interactive,
+          iconData: 'gamepad',
+        ),
+        LearningSlide(
+          id: 'expansion-summary',
+          title: 'Riassunto dei Concetti 💡',
+          content: 'Ripasso chiave di tutto il modulo e takeaway principali.',
+          type: SlideType.summary,
+          iconData: 'celebration',
+          bulletPoints: [
+            '✅ Giochi di coordinamento, somma zero e non zero',
+            '✅ Strategie evolutive, miste e giochi ripetuti',
+            '✅ Applicazioni aziendali, sociali e politiche',
+            '✅ Comprensione pratica dei giochi più complessi',
+          ],
+        ),
+      ],
+    ),
+
   ];
 
   static LearningModule? getModuleById(String id) {

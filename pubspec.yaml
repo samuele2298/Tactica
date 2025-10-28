@@ -37,7 +37,9 @@ dependencies:
   
   # State management with Riverpod
   flutter_riverpod: ^2.4.9
-  
+
+  flutter_markdown: ^0.7.0
+
   # Navigation with Go Router
   go_router: ^14.6.1
   
@@ -75,6 +77,8 @@ flutter:
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/to/asset-from-package
+
+  
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
